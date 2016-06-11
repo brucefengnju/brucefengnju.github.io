@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Clojure实现规则引擎 | 青蜂侠</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="规则引擎规则引擎由推理引擎发展而来，是一种嵌入在应用程序中的组件，实现了将业务决策从应用程序代码中分离出来，并使用预定义的语义模块编写业务决策。接受数据输入，解释业务规则，并根据业务规则做出业务决策。1234when    &amp;lt;conditions&amp;gt;then    &amp;lt;actions&amp;gt;;
+最为著名的规则引擎是Drools，现由JBoss维护，分为Guvnor，Expert，Jb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Clojure实现规则引擎">
+<meta property="og:url" content="http://yoursite.com/post/ruleengine-clojure-impments/index.html">
+<meta property="og:site_name" content="青蜂侠">
+<meta property="og:description" content="规则引擎规则引擎由推理引擎发展而来，是一种嵌入在应用程序中的组件，实现了将业务决策从应用程序代码中分离出来，并使用预定义的语义模块编写业务决策。接受数据输入，解释业务规则，并根据业务规则做出业务决策。1234when    &amp;lt;conditions&amp;gt;then    &amp;lt;actions&amp;gt;;
+最为著名的规则引擎是Drools，现由JBoss维护，分为Guvnor，Expert，Jb">
+<meta property="og:updated_time" content="2015-08-20T12:15:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Clojure实现规则引擎">
+<meta name="twitter:description" content="规则引擎规则引擎由推理引擎发展而来，是一种嵌入在应用程序中的组件，实现了将业务决策从应用程序代码中分离出来，并使用预定义的语义模块编写业务决策。接受数据输入，解释业务规则，并根据业务规则做出业务决策。1234when    &amp;lt;conditions&amp;gt;then    &amp;lt;actions&amp;gt;;
+最为著名的规则引擎是Drools，现由JBoss维护，分为Guvnor，Expert，Jb">
+  
+    <link rel="alternate" href="/atom.xml" title="青蜂侠" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">青蜂侠</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-clojure/Clojure实现规则引擎" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/post/ruleengine-clojure-impments/" class="article-date">
+  <time datetime="2015-08-16T08:39:00.000Z" itemprop="datePublished">2015-08-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Clojure实现规则引擎
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="规则引擎"><a href="#规则引擎" class="headerlink" title="规则引擎"></a>规则引擎</h3><p>规则引擎由推理引擎发展而来，是一种嵌入在应用程序中的组件，实现了将业务决策从应用程序代码中分离出来，并使用预定义的语义模块编写业务决策。接受数据输入，解释业务规则，并根据业务规则做出业务决策。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">when</span><br><span class="line">    &lt;conditions&gt;</span><br><span class="line">then</span><br><span class="line">    &lt;actions&gt;;</span><br></pre></td></tr></table></figure></p>
+<p>最为著名的规则引擎是<a href="http://www.jboss.org/drools" target="_blank" rel="external">Drools</a>，现由JBoss维护，分为Guvnor，Expert，Jbpm5，Jbpm5和Planner五个模块，应用在jBPM工作流中。<br>目前Java中开源规则引擎也非常多，<a href="http://java-source.net/open-source/rule-engines" target="_blank" rel="external">Open Source Rule Engines in Java</a>，Java也已经指定了<a href="http://www.oracle.com/technetwork/articles/java/javarule-139829.html" target="_blank" rel="external">rule engine规范</a>。</p>
+<h3 id="Clojure实现的规则引擎"><a href="#Clojure实现的规则引擎" class="headerlink" title="Clojure实现的规则引擎"></a>Clojure实现的规则引擎</h3><p>现在比较著名的规则引擎有：<br><a href="https://github.com/hraberg/mimir" target="_blank" rel="external">mimir</a>,这个library不牵涉到复杂的数据结构，使用起来也比较简单。<br><a href="https://github.com/rbrush/clara-rules" target="_blank" rel="external">clara</a>,与Drools比较相似，其目标是解绑业务逻辑，同时利用的Clojure和Java生态系统的优势表达其作为组合的规则，以控制业务复杂性；使用起来比较简单，可以很好的在分布式系统上运行。<br><a href="https://github.com/clojure/core.logic" target="_blank" rel="external">core.logic</a>,严格意义上不能算是<a href="https://zh.wikipedia.org/wiki/%E9%82%8F%E8%BC%AF%E7%B7%A8%E7%A8%8B" target="_blank" rel="external">规则引擎</a>（<a href="https://en.wikipedia.org/wiki/Forward_chaining" target="_blank" rel="external">Forward chaining</a>范畴，实现了类似Prolog的逻辑编程（<a href="https://en.wikipedia.org/wiki/Backward_chaining" target="_blank" rel="external">Backward chaining</a>)。</p>
+<h4 id="mimir-使用"><a href="#mimir-使用" class="headerlink" title="mimir 使用"></a>mimir 使用</h4><p>mimir是一个实验性的规则引擎，相对简单，截至现在已经2年多没有更新了，在这里也就不多介绍了。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(rule xyz</span><br><span class="line">       X &lt; Y</span><br><span class="line">       Z &gt; 5</span><br><span class="line">       Z = (+ X Y)</span><br><span class="line">       Z != Y</span><br><span class="line">       =&gt;</span><br><span class="line">       (str X '+ Y '= Z))</span><br><span class="line"></span><br><span class="line"> (matches? "2+4=6"))</span><br></pre></td></tr></table></figure></p>
+<p>这段代码是先指定了规则(rule)，然后判定一个fact是否满足该条件。</p>
+<h4 id="clara-使用"><a href="#clara-使用" class="headerlink" title="clara 使用"></a>clara 使用</h4><p>clara的基本使用在<a href="https://github.com/rbrush/clara-examples" target="_blank" rel="external">clara-example</a>里面有很多示例。clara可以在Clojure,ClojureScript和Javay语言中使用。<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">defrule</span> free-lunch-with-gizmo</span><br><span class="line">  <span class="string">"Anyone who purchases a gizmo gets a free lunch."</span></span><br><span class="line">  [Purchase (<span class="name"><span class="builtin-name">=</span></span> item <span class="symbol">:gizmo</span>)]</span><br><span class="line">  =&gt;</span><br><span class="line">  (<span class="name">insert!</span> (<span class="name">-&gt;Promotion</span> <span class="symbol">:free-lunch-with-gizmo</span> <span class="symbol">:lunch</span>)))</span><br></pre></td></tr></table></figure></p>
+<p>clara还提供了规则查询的功能<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">defquery</span> get-promotions</span><br><span class="line">  <span class="string">"Query to find promotions for the purchase."</span></span><br><span class="line">  []</span><br><span class="line">  [?promotion &lt;- Promotion])</span><br></pre></td></tr></table></figure></p>
+<h4 id="core-logic使用"><a href="#core-logic使用" class="headerlink" title="core.logic使用"></a>core.logic使用</h4><p>core.logic 严格来说是逻辑变成的范畴，过程是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">事实 + 规则 =结果</span><br></pre></td></tr></table></figure></p>
+<p>是通过目前已经符合条件的事实 和现有规则来推导符合该规则的条件，相比与规则引擎是一种反向过程。<br>例如：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">run*</span> [q]</span><br><span class="line">   (<span class="name">membero</span> q [<span class="number">1</span> <span class="number">2</span> <span class="number">3</span>])</span><br><span class="line">   (<span class="name">membero</span> q [<span class="number">2</span> <span class="number">3</span> <span class="number">4</span>]))</span><br></pre></td></tr></table></figure></p>
+<p>q满足了是[1 2 3]集合元素，又是 [2 3 4]的元素，计算q应该是什么。<br>core.logic主要采用一下方式：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">run*</span> [logic-variable]</span><br><span class="line">  &amp;logic-expressions)</span><br></pre></td></tr></table></figure></p>
+<p>支持<strong>fresh</strong> <strong>unify</strong>, <strong>==</strong>等操作，默认条件是and操作，也可以通过conde支持OR操作。详细参见 <a href="https://github.com/clojure/core.logic/wiki/Features" target="_blank" rel="external">core.logic Features</a>。</p>
+<h3 id="ruleengine"><a href="#ruleengine" class="headerlink" title="ruleengine"></a>ruleengine</h3><p>这是我为了练习Clojure而开的项目，结合了去年自己做优惠基础平台时的经验和想法的项目，目前还处于private状态。先写在这里，等到完成之后再公开项目。</p>
+<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><blockquote>
+<p><a href="http://www.quora.com/How-can-Clojure-be-used-for-rules-engines" target="_blank" rel="external">Quora:How can Clojure be used for rules engines</a><br><a href="https://docs.jboss.org/drools/release/5.4.0.CR1/drools-expert-docs/html/ch01.html" target="_blank" rel="external">The Rule Engine</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/post/ruleengine-clojure-impments/" data-id="cipak3m2m0009ya5nr9wyiryv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Clojure-ruleengine/">Clojure ruleengine</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/post/undefined/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/post/undertow-core/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">undertow core</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/SQL/">SQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/clojure/">clojure</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/programing/">programing</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/summarize/">summarize</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术总结/">技术总结</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure/">Clojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure-ruleengine/">Clojure ruleengine</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idempotent/">Idempotent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-JVM/">Java JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-Index-SQL/">MySQL Index SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-MySQL/">SQL MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Java/">Spring Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Undertow/">Undertow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clojure-Compojure/">clojure Compojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/front-end-cross-domian/">front-end, cross-domian</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice/">microservice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice-design-patterns/">microservice design-patterns</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rime-输入法/">rime,输入法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc-pigeon/">rpc pigeon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrum-敏捷-大项目管理/">scrum 敏捷 大项目管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/">动态代码 Groovy OGNL SpEL MVEL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动静分离/">动静分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实时通信-comet-websocket/">实时通信 comet websocket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技术总结/">技术总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新年计划/">新年计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/管理/">管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统重构-设计模式/">系统重构 设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Clojure/" style="font-size: 20px;">Clojure</a> <a href="/tags/Clojure-ruleengine/" style="font-size: 10px;">Clojure ruleengine</a> <a href="/tags/Idempotent/" style="font-size: 10px;">Idempotent</a> <a href="/tags/Java-JVM/" style="font-size: 10px;">Java JVM</a> <a href="/tags/MySQL-Index-SQL/" style="font-size: 10px;">MySQL Index SQL</a> <a href="/tags/SQL-MySQL/" style="font-size: 10px;">SQL MySQL</a> <a href="/tags/Spring-Java/" style="font-size: 16.67px;">Spring Java</a> <a href="/tags/Undertow/" style="font-size: 13.33px;">Undertow</a> <a href="/tags/clojure-Compojure/" style="font-size: 10px;">clojure Compojure</a> <a href="/tags/front-end-cross-domian/" style="font-size: 10px;">front-end, cross-domian</a> <a href="/tags/memcached/" style="font-size: 10px;">memcached</a> <a href="/tags/microservice/" style="font-size: 10px;">microservice</a> <a href="/tags/microservice-design-patterns/" style="font-size: 10px;">microservice design-patterns</a> <a href="/tags/rime-输入法/" style="font-size: 10px;">rime,输入法</a> <a href="/tags/rpc-pigeon/" style="font-size: 10px;">rpc pigeon</a> <a href="/tags/scrum-敏捷-大项目管理/" style="font-size: 10px;">scrum 敏捷 大项目管理</a> <a href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/" style="font-size: 10px;">动态代码 Groovy OGNL SpEL MVEL</a> <a href="/tags/动静分离/" style="font-size: 10px;">动静分离</a> <a href="/tags/实时通信-comet-websocket/" style="font-size: 10px;">实时通信 comet websocket</a> <a href="/tags/技术总结/" style="font-size: 16.67px;">技术总结</a> <a href="/tags/新年计划/" style="font-size: 13.33px;">新年计划</a> <a href="/tags/管理/" style="font-size: 13.33px;">管理</a> <a href="/tags/系统重构-设计模式/" style="font-size: 10px;">系统重构 设计模式</a> <a href="/tags/转载/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/post/bigproj-in-scrum/">Scrum中大项目管理</a>
+          </li>
+        
+          <li>
+            <a href="/post/dynamic-code-in-java/">Java中使用动态代码</a>
+          </li>
+        
+          <li>
+            <a href="/post/system-reconstruct-summary/">业务系统重构总结</a>
+          </li>
+        
+          <li>
+            <a href="/post/service-design-patterns-practices/">服务化设计模式实践</a>
+          </li>
+        
+          <li>
+            <a href="/post/brower-server-msg/">浏览器与服务器的消息通信</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 陈景广<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

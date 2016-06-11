@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>MySQL索引及查询优化 | 青蜂侠</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1. MySQL索引的原理1.1 索引目的索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？
+1.2 索引原理除了词典，生活中随处可见索引的例子，如火车站的车次表、图书的目录等。它们的原理都是一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL索引及查询优化">
+<meta property="og:url" content="http://yoursite.com/post/mysql-index-query/index.html">
+<meta property="og:site_name" content="青蜂侠">
+<meta property="og:description" content="1. MySQL索引的原理1.1 索引目的索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？
+1.2 索引原理除了词典，生活中随处可见索引的例子，如火车站的车次表、图书的目录等。它们的原理都是一">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/表.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/索引.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/数据.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/无索引分析.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/userId索引.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/useIDDate索引.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/范围查询sql索引.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/范围查询sql索引.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/范围查询sql索引.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/join无where.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/join%20无索引.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/join使用索引过滤.png">
+<meta property="og:updated_time" content="2016-03-19T09:54:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL索引及查询优化">
+<meta name="twitter:description" content="1. MySQL索引的原理1.1 索引目的索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？
+1.2 索引原理除了词典，生活中随处可见索引的例子，如火车站的车次表、图书的目录等。它们的原理都是一">
+<meta name="twitter:image" content="http://7xkbey.com1.z0.glb.clouddn.com/表.png">
+  
+    <link rel="alternate" href="/atom.xml" title="青蜂侠" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">青蜂侠</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-MySQL索引及查询优化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/post/mysql-index-query/" class="article-date">
+  <time datetime="2015-09-29T07:48:00.000Z" itemprop="datePublished">2015-09-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MySQL索引及查询优化
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-MySQL索引的原理"><a href="#1-MySQL索引的原理" class="headerlink" title="1. MySQL索引的原理"></a>1. MySQL索引的原理</h3><h4 id="1-1-索引目的"><a href="#1-1-索引目的" class="headerlink" title="1.1 索引目的"></a>1.1 索引目的</h4><p>索引的目的在于提高查询效率，可以类比字典，如果要查“mysql”这个单词，我们肯定需要定位到m字母，然后从下往下找到y字母，再找到剩下的sql。如果没有索引，那么你可能需要把所有单词看一遍才能找到你想要的，如果我想找到m开头的单词呢？或者ze开头的单词呢？</p>
+<h4 id="1-2-索引原理"><a href="#1-2-索引原理" class="headerlink" title="1.2 索引原理"></a>1.2 索引原理</h4><p>除了词典，生活中随处可见索引的例子，如火车站的车次表、图书的目录等。它们的原理都是一样的，通过不断的缩小想要获得数据的范围来筛选出最终想要的结果，同时把随机的事件变成顺序的事件，也就是我们总是通过同一种查找方式来锁定数据。<br>每个数据表都有一个主键（<em>如果没有主键，数据库会将该表中的唯一索引当作主键使用？</em>），MySQL会以主键的方式构造一棵树，叶子节点存放该主键对应的整行数据。<br><img src="http://7xkbey.com1.z0.glb.clouddn.com/表.png" alt=""><br>自己建立的索引，一般叫做辅助索引，辅助索引的树，也自己节点存放了两个东西，一个是索引自身的值，另外一个是索引对应主键的值。<br><img src="http://7xkbey.com1.z0.glb.clouddn.com/索引.png" alt=""></p>
+<p>如果索引是联合索引，比如UserID和AddTime索引的方式，索引叶子节点会存储UserID和AddTime之间的配对+主键的配对数据。</p>
+<h4 id="1-3-索引的类型"><a href="#1-3-索引的类型" class="headerlink" title="1.3 索引的类型"></a>1.3 索引的类型</h4><h5 id="1-3-1-B-树索引"><a href="#1-3-1-B-树索引" class="headerlink" title="1.3.1 B-树索引"></a>1.3.1 B-树索引</h5><p><strong>B-树索引在生产环境更为广泛，这里我只针对B-树索引进行讨论</strong><br>B-树索引是一个复杂的内容，可以参见<a href="https://en.wikipedia.org/wiki/B-tree" target="_blank" rel="external">B-tree</a>。</p>
+<h5 id="1-3-2-Hash索引"><a href="#1-3-2-Hash索引" class="headerlink" title="1.3.2 Hash索引"></a>1.3.2 Hash索引</h5><p>哈希索引（Hash Index）建立在哈希表的基础上，它只对使用了索引中的每一列的精确查找有用。对于每一行，存储引擎计算出了被索引的哈希码（Hash Code），它是一个较小的值，并且有可能和其他行的哈希码不同。它把哈希码保存在索引中，并且保存了一个指向哈希表中的每一行的指针。</p>
+<p>在mysql中，只有memory存储引擎支持显式的哈希索引。</p>
+<ul>
+<li>Hash 索引仅仅能满足”=”,”IN”和”&lt;=&gt;”查询，不能使用范围查询。</li>
+<li>Hash 索引无法被用来避免数据的排序操作。</li>
+<li>Hash 索引不能利用部分索引键查询。</li>
+<li>Hash 索引在任何时候都不能避免表扫描。</li>
+<li>Hash 索引遇到大量Hash值相等的情况后性能并不一定就会比B-Tree索引高</li>
+</ul>
+<h5 id="1-3-3-空间索引（R-树）索引"><a href="#1-3-3-空间索引（R-树）索引" class="headerlink" title="1.3.3  空间索引（R-树）索引"></a>1.3.3  空间索引（R-树）索引</h5><p>主要用于GIS中空间数据的存储，但是MySQL的空间索引支持并不好，现在多使用PostgreSQL。</p>
+<h5 id="1-3-4-全文索引-Full-text-索引"><a href="#1-3-4-全文索引-Full-text-索引" class="headerlink" title="1.3.4  全文索引(Full-text)索引"></a>1.3.4  全文索引(Full-text)索引</h5><p>文本字段上的普通索引只能加快对出现在字段内容最前面的字符串(也就是字段内容开头的字符)进行检索操作。如果字段里存放的是由几个、甚至是多个单词构成 的较大段文字，普通索引就没什么作用了。这种检索往往以LIKE %word%的形式出现，这对MySQL来说很复杂，如果需要处理的数据量很大，响应时间就会很长。</p>
+<p>这类场合正是全文索引(full-text index)可以大显身手的地方。在生成这种类型的索引时，MySQL将把在文本中出现的所有单词创建为一份清单，查询操作将根据这份清单去检索有关的数 据记录。全文索引即可以随数据表一同创建，也可以等日后有必要时再使用下面这条命令添加：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tablename <span class="keyword">ADD</span> FULLTEXT(column1, column2)</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-索引的合理使用"><a href="#2-索引的合理使用" class="headerlink" title="2. 索引的合理使用"></a>2. 索引的合理使用</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">字段名</th>
+<th style="text-align:center">数据类型</th>
+<th style="text-align:right">NULL</th>
+<th style="text-align:center">INDEX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ID</td>
+<td style="text-align:center">int(10)</td>
+<td style="text-align:right">NOT NULL</td>
+<td style="text-align:center">pk</td>
+</tr>
+<tr>
+<td style="text-align:center">UserID</td>
+<td style="text-align:center">int(10)</td>
+<td style="text-align:right">NOT NULL</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Mobile</td>
+<td style="text-align:center">varchar(15)</td>
+<td style="text-align:right">NOT NULL</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">ArriveDate</td>
+<td style="text-align:center">DateTime</td>
+<td style="text-align:right">NOT NULL</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">AddDate</td>
+<td style="text-align:center">DateTime</td>
+<td style="text-align:right">NOT NULL</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">UpdateTime</td>
+<td style="text-align:center">timetamp</td>
+<td style="text-align:right">NOT NULL</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>下面我们的分析都会这个数据表为例。</p>
+<h4 id="2-1-索引在查询中的使用"><a href="#2-1-索引在查询中的使用" class="headerlink" title="2.1 索引在查询中的使用"></a>2.1 索引在查询中的使用</h4><p><strong>不使用索引</strong></p>
+<p><img src="http://7xkbey.com1.z0.glb.clouddn.com/数据.png" alt=""></p>
+<p>现在刚建立的表上没有任何索引，但是我们想通过UserID找出ArriveDate这个数据，SQL将会写成如下方式：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> ArriveDate <span class="keyword">from</span> TestSQL <span class="keyword">where</span> UserID = <span class="number">10</span>;</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://7xkbey.com1.z0.glb.clouddn.com/无索引分析.png" alt=""></p>
+<p>这个SQL没有走索引，数据库就会根据主键（ID）扫描全表，每拿到一条数据库记录就与where条件比对，如果符合条件则将这条记录返回，重复直到全表扫描完毕。<br>在大数据量的情况下，不使用索引进行查询几乎是不可行的。</p>
+<ul>
+<li>使用UserID作为索引</li>
+</ul>
+<p><img src="http://7xkbey.com1.z0.glb.clouddn.com/userId索引.png" alt=""><br>这时候看到where条件是使用了UserID索引的。这时候数据库引擎会根据UserID到索引上找到ID，然后根据ID去查询对应记录，从而取出ArriveDate数据。<br>现在我们将UserID的索引更换为UserID,ArriveDate的联合索引。<br>现在再来查询：<br><img src="http://7xkbey.com1.z0.glb.clouddn.com/useIDDate索引.png" alt=""><br>可以发现这个Extra里面也是使用了索引的，这就意味这个SQL是完全走了索引，数据库引擎根据UserID找到对应的索引， 因为Select的字段是索引的一部分，所以找到索引之后不需要再读取表记录了。</p>
+<p>当一个查询语句中使用设计到多个索引时，MySQL数据库引擎会计算不同索引涉及到的行数大小，选取行数最小的索引作为实际执行时使用的索引，如：<br><img src="http://7xkbey.com1.z0.glb.clouddn.com/范围查询sql索引.png" alt=""><br><strong><font style="color:red">一次查询同一张表，MySQL每次只会使用一个索引。</font></strong></p>
+<h4 id="2-2-索引在范围查询的使用"><a href="#2-2-索引在范围查询的使用" class="headerlink" title="2.2 索引在范围查询的使用"></a>2.2 索引在范围查询的使用</h4><p>范围查询主要是指查询字段值在某个范围内的记录，表现在where条件中为&gt;,&lt;,between等关键字。如，我们使用如下SQL进行查询：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> UserID,ArriveDate  <span class="keyword">from</span> TestSQL <span class="keyword">where</span> UserID &gt;<span class="number">0</span> <span class="keyword">and</span> UserID &lt;<span class="number">100</span>  <span class="keyword">and</span> ArriveDate = <span class="string">'2015-09-23 00:00:00'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>作为对比，我们使用另一种SQL查询相同记录：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> UserID,ArriveDate <span class="keyword">from</span> TestSQL <span class="keyword">where</span> UserID <span class="keyword">in</span>(<span class="number">2</span>,<span class="number">12</span>) <span class="keyword">and</span> ArriveDate = <span class="string">'2015-09-23 00:00:00'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>联调SQL都会查询出相同的记录：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">UserID</th>
+<th style="text-align:center">ArriveDate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2015-09-23 00:00:00</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">2015-09-23 00:00:00</td>
+</tr>
+</tbody>
+</table>
+<p>第一个SQL（使用范围查询）的explain结果为：</p>
+<p><img src="http://7xkbey.com1.z0.glb.clouddn.com/范围查询sql索引.png" alt=""><br>第二个SQL（未使用范围查询）的explain结果为：</p>
+<p><img src="http://7xkbey.com1.z0.glb.clouddn.com/范围查询sql索引.png" alt=""><br>对比可见，两种sql的索引长度是不一样的。在范围查询中，索引的使用是遵循最左（leftmost）原则，例如这个表的使用的索引是IX_UserID_ArriveDate，但是因为UserID使用了范围查询(Range query)，就不再使用ArrvieDate的索引了。</p>
+<h4 id="2-3-排序使用索引"><a href="#2-3-排序使用索引" class="headerlink" title="2.3 排序使用索引"></a>2.3 排序使用索引</h4><p>在排序中以下情况无法使用索引：</p>
+<ul>
+<li>Order by 的字段并不是索引</li>
+<li><p>使用了两种排序方向，但是索引都是使用升序排列的<br>  在索引的原理里我们讲到过</p>
+<blockquote>
+<p>如果索引是联合索引，比如UserID和AddTime索引的方式，索引叶子节点会存储UserID和AddTime之间的配对+主键的配对数据。</p>
+</blockquote>
+<p>  这种情况下，索引会以UserID进行排序，当UserID相同时再以AddTime进行排序（默认为升序），以我们现有的数据库为例：</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> UserID,ArriveDate  <span class="keyword">from</span> TestSQL <span class="keyword">where</span> UserID <span class="keyword">in</span>(<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>)   <span class="keyword">order</span> <span class="keyword">by</span> UserID <span class="keyword">asc</span>,ArriveDate <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<p>  这种情况将只使用UserID 作为索引，而ArriveDate 将不再作为索引。</p>
+</li>
+<li>不符合最左（Left most）的条件<pre><code><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">     <span class="keyword">select</span> * <span class="keyword">from</span> TestSQL <span class="keyword">where</span>  ArriveDate =  <span class="string">'2015-09-23 00:00:00'</span> <span class="keyword">order</span> <span class="keyword">by</span> UserID <span class="keyword">desc</span></span><br><span class="line">    <span class="string">``</span><span class="string">`  </span><br><span class="line">    这种情况将不再使用UserID_ArriveDate索引</span><br><span class="line">- 联合查询的情况下，如果第一个筛选条件是范围查询，MySQL不再使用剩下的索引</span><br><span class="line"></span><br><span class="line">    `</span><span class="string">``</span><span class="keyword">sql</span></span><br><span class="line">    <span class="keyword">select</span> *  <span class="keyword">from</span> TestSQL <span class="keyword">where</span> UserID &gt;<span class="number">1</span> <span class="keyword">and</span> UserID &lt; <span class="number">5</span> <span class="keyword">order</span> <span class="keyword">by</span> UserID <span class="keyword">desc</span>,ArriveDate <span class="keyword">desc</span></span><br></pre></td></tr></table></figure>
+</code></pre></li>
+</ul>
+<p>这种情况下，因为UserID 为范围查询，所以就不会再使用ArriveDate 索引了。</p>
+<h4 id="2-4-join-中使用索引"><a href="#2-4-join-中使用索引" class="headerlink" title="2.4 join 中使用索引"></a>2.4 join 中使用索引</h4><p>我们来新建一个TestSQL_join表，其结构与TestSQL 相同，但只有Mobile索引。首先来看一个简单的join操作<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> TestSQL <span class="keyword">join</span> TestSQL_join <span class="keyword">on</span> TestSQL.id = TestSQL.id</span><br></pre></td></tr></table></figure></p>
+<p>MySQL首先比较TestSQL和 TestSQL_join表那个行数少，如TestSQL中的记录较少，TestSQL就是一个小表，而TestSQL_join则是大表，MySQL引擎先把TestSQL中的ID全部去出来，然后根据id到TestSQL_join中查询相关的记录。</p>
+<p><img src="http://7xkbey.com1.z0.glb.clouddn.com/join无where.png" alt=""></p>
+<p>在这里，TestSQL中行数决定了循环的次数，但是TestSQL_join则决定了每次循环查询所需要查询的时间；这时如果TestSQL_join中的ID是索引则会大大减少查询时间如下SQL:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> TestSQL a <span class="keyword">join</span> TestSQL_join b <span class="keyword">on</span> a.ID = b.ID</span><br></pre></td></tr></table></figure>
+<p>由于b.ID 是TestSQL_join的主键，查询使用了TestSQL_join主键索引。<br><img src="http://7xkbey.com1.z0.glb.clouddn.com/join%20无索引.png" alt=""><br>如果此时对TestSQL增加条件筛选：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">select</span> * <span class="keyword">from</span> TestSQL a <span class="keyword">join</span> TestSQL_join b <span class="keyword">on</span> a.ID = b.ID</span><br><span class="line"><span class="keyword">where</span> a.UserID = <span class="number">1</span>;</span><br></pre></td></tr></table></figure></p>
+<p>因为a.UserID 是TestSQL的索引，所以在过滤TestSQL表的行数时，采用次索引查询对应ID，然后根据ID查询TestSQL_join的记录。</p>
+<p><img src="http://7xkbey.com1.z0.glb.clouddn.com/join使用索引过滤.png" alt=""><br>如果此时针对TestSQL_join 增加where条件过滤：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">select</span> * <span class="keyword">from</span> TestSQL a <span class="keyword">join</span> TestSQL_join b <span class="keyword">on</span> a.ID = b.ID</span><br><span class="line"><span class="keyword">where</span> a.UserID &gt;<span class="number">1</span> <span class="keyword">and</span> b.Mobile = <span class="string">"2147483647"</span></span><br></pre></td></tr></table></figure></p>
+<p>这种时候，因为TestSQL 和 TestSQL_join 根据where条件所筛选出来的行数大小可能会有变化，也就是说TestSQL_join 有可能会变成小表，这时候将会优先从TestSQL_join 查询出相关ID，然后根据ID去查询TestSQL。</p>
+<p>join操作时，大表小表的概念，主要是按照两张表分别执行对应查询条件，哪个开销更小，哪个就是小表。</p>
+<p><strong>join操作虽然在SQL层面很方便，而且在线上大流量的情况下，一旦SQL的join操作导致查询缓慢，较难即使优化。另外在服务化的系统中，容易导致业务领域不清晰，所以在互联网大流量的应用中是不推荐使用join操作的。</strong></p>
+<h3 id="3-索引建立的原则"><a href="#3-索引建立的原则" class="headerlink" title="3. 索引建立的原则"></a>3. 索引建立的原则</h3><ul>
+<li>使用区分度高的列作为索引<br>  区分度的公式是count(distinct col)/count(*)，表示字段不重复的比例，区分度越高，索引树的分叉也就越多，一次性找到的概率也就越高。</li>
+<li>尽量使用字段长度小的列作为索引</li>
+<li>使用数据类型简单的列（int 型，固定长度）</li>
+<li><p>选用NOT NULL的列<br>  在MySQL中，含有空值的列很难进行查询优化，因为它们使得索引、索引的统计信息以及比较运算更加复杂。你应该用0、一个特殊的值或者一个空串代替空值。</p>
+</li>
+<li><p>尽量的扩展索引，不要新建索引。比如表中已经有a的索引，现在要加(a,b)的索引，那么只需要修改原来的索引即可。这样也可避免索引重复。</p>
+<h3 id="4-索引使用的原则"><a href="#4-索引使用的原则" class="headerlink" title="4. 索引使用的原则"></a>4. 索引使用的原则</h3></li>
+<li>最左前缀匹配原则(leftmost)，mysql会一直向右匹配直到遇到范围查询(&gt;、&lt;、between、like)就停止匹配，=和in可以乱序，一个联合索引中，如UserID，ArriveDate的联合索引，使用ArriveDate in （）and UserID = 的任意顺序，MySQL的查询优化器会帮你优化成索引可以识别的形式</li>
+<li><p>索引列不能参与计算</p>
+   <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> *  <span class="keyword">from</span> TestSQL <span class="keyword">where</span> UserID + <span class="number">1</span> &gt;<span class="number">1</span> <span class="keyword">and</span> UserID &lt; <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<p>  这种方式UserID 的索引就不会再被使用，因为在进行检索时，需要把所有元素都应用函数才能比较，显然成本太大。<br>另外当使用&lt;&gt;,like通配符放置在最前面 如：like’%ddd’ ,not, in, !=等运算符都不会使用索引。</p>
+</li>
+<li>查询数据库记录时，查询到的条目数尽量小，当通过索引获取到的数据库记录&gt; 数据库总揭露的1/3时，SQL将有可能直接全表扫描，索引就失去了应有的作用。</li>
+</ul>
+<h3 id="5-explain的使用"><a href="#5-explain的使用" class="headerlink" title="5. explain的使用"></a>5. explain的使用</h3><p>explain是MySQL查询优化过程的神器，详情可以查看<a href="http://dev.mysql.com/doc/refman/5.0/en/explain-output.html#explain-extra-information" target="_blank" rel="external">explain的使用</a></p>
+<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><blockquote>
+<p>High Performance MySQL-THIRD EDITION<br><a href="http://dev.mysql.com/doc/refman/5.0/en/explain-output.html#explain-extra-information" target="_blank" rel="external">explain的使用</a><br><a href="http://mp.weixin.qq.com/s?__biz=MzA5NTQxNjA4NQ==&amp;mid=211982023&amp;idx=1&amp;sn=5bc45006475f63258f7ac78283e23781&amp;key=dffc561732c22651884a66f1d1ebe9536538747eec9accebae9bb52c3834bb1c9eee59714db6c3261df4f7e9b538d0db&amp;ascene=0&amp;uin=MjE5NTY4NQ%3D%3D&amp;devicetype=iMac+MacBookPro12%2C1+OSX+OSX+10.10.5+build(14F27" target="_blank" rel="external">MySQL索引学习漫画</a><br><a href="http://tech.meituan.com/mysql-index.html" target="_blank" rel="external">MySQL索引原理及慢查询优化</a><br><a href="http://www.cnblogs.com/hustcat/archive/2009/10/28/1591648.html" target="_blank" rel="external">理解MySQL——索引与优化</a><br><a href="http://www.cnblogs.com/kupig/archive/2011/10/19/2217228.html" target="_blank" rel="external">mysql索引的类型和优缺点</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/post/mysql-index-query/" data-id="cipak1vpa0005y95npd3o5jz6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL-Index-SQL/">MySQL Index SQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/post/api-idempotent/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          分布式系统接口幂等性
+        
+      </div>
+    </a>
+  
+  
+    <a href="/post/undefined/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/SQL/">SQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/clojure/">clojure</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/programing/">programing</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/summarize/">summarize</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术总结/">技术总结</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure/">Clojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure-ruleengine/">Clojure ruleengine</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idempotent/">Idempotent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-JVM/">Java JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-Index-SQL/">MySQL Index SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-MySQL/">SQL MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Java/">Spring Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Undertow/">Undertow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clojure-Compojure/">clojure Compojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/front-end-cross-domian/">front-end, cross-domian</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice/">microservice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice-design-patterns/">microservice design-patterns</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rime-输入法/">rime,输入法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc-pigeon/">rpc pigeon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrum-敏捷-大项目管理/">scrum 敏捷 大项目管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/">动态代码 Groovy OGNL SpEL MVEL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动静分离/">动静分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实时通信-comet-websocket/">实时通信 comet websocket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技术总结/">技术总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新年计划/">新年计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/管理/">管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统重构-设计模式/">系统重构 设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Clojure/" style="font-size: 20px;">Clojure</a> <a href="/tags/Clojure-ruleengine/" style="font-size: 10px;">Clojure ruleengine</a> <a href="/tags/Idempotent/" style="font-size: 10px;">Idempotent</a> <a href="/tags/Java-JVM/" style="font-size: 10px;">Java JVM</a> <a href="/tags/MySQL-Index-SQL/" style="font-size: 10px;">MySQL Index SQL</a> <a href="/tags/SQL-MySQL/" style="font-size: 10px;">SQL MySQL</a> <a href="/tags/Spring-Java/" style="font-size: 16.67px;">Spring Java</a> <a href="/tags/Undertow/" style="font-size: 13.33px;">Undertow</a> <a href="/tags/clojure-Compojure/" style="font-size: 10px;">clojure Compojure</a> <a href="/tags/front-end-cross-domian/" style="font-size: 10px;">front-end, cross-domian</a> <a href="/tags/memcached/" style="font-size: 10px;">memcached</a> <a href="/tags/microservice/" style="font-size: 10px;">microservice</a> <a href="/tags/microservice-design-patterns/" style="font-size: 10px;">microservice design-patterns</a> <a href="/tags/rime-输入法/" style="font-size: 10px;">rime,输入法</a> <a href="/tags/rpc-pigeon/" style="font-size: 10px;">rpc pigeon</a> <a href="/tags/scrum-敏捷-大项目管理/" style="font-size: 10px;">scrum 敏捷 大项目管理</a> <a href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/" style="font-size: 10px;">动态代码 Groovy OGNL SpEL MVEL</a> <a href="/tags/动静分离/" style="font-size: 10px;">动静分离</a> <a href="/tags/实时通信-comet-websocket/" style="font-size: 10px;">实时通信 comet websocket</a> <a href="/tags/技术总结/" style="font-size: 16.67px;">技术总结</a> <a href="/tags/新年计划/" style="font-size: 13.33px;">新年计划</a> <a href="/tags/管理/" style="font-size: 13.33px;">管理</a> <a href="/tags/系统重构-设计模式/" style="font-size: 10px;">系统重构 设计模式</a> <a href="/tags/转载/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/post/bigproj-in-scrum/">Scrum中大项目管理</a>
+          </li>
+        
+          <li>
+            <a href="/post/dynamic-code-in-java/">Java中使用动态代码</a>
+          </li>
+        
+          <li>
+            <a href="/post/system-reconstruct-summary/">业务系统重构总结</a>
+          </li>
+        
+          <li>
+            <a href="/post/service-design-patterns-practices/">服务化设计模式实践</a>
+          </li>
+        
+          <li>
+            <a href="/post/brower-server-msg/">浏览器与服务器的消息通信</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 陈景广<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

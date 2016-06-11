@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>undertow core | 青蜂侠</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="###XNIOundertow 是以XNIO为实现核心。XNIO有两个核心概念：
+####ChannelChannel，是传输管道的抽象概念，在NIO的Channel上进行的扩展加强，使用ChannelListener API进行事件通知。在创建Channel时，就赋予IO线程，用于执行所有的ChannelListener回调方法。
+####IOWorker区分IO线程和工作线程，创建一个工作线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="undertow core">
+<meta property="og:url" content="http://yoursite.com/post/undertow-core/index.html">
+<meta property="og:site_name" content="青蜂侠">
+<meta property="og:description" content="###XNIOundertow 是以XNIO为实现核心。XNIO有两个核心概念：
+####ChannelChannel，是传输管道的抽象概念，在NIO的Channel上进行的扩展加强，使用ChannelListener API进行事件通知。在创建Channel时，就赋予IO线程，用于执行所有的ChannelListener回调方法。
+####IOWorker区分IO线程和工作线程，创建一个工作线程">
+<meta property="og:updated_time" content="2015-08-06T09:09:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="undertow core">
+<meta name="twitter:description" content="###XNIOundertow 是以XNIO为实现核心。XNIO有两个核心概念：
+####ChannelChannel，是传输管道的抽象概念，在NIO的Channel上进行的扩展加强，使用ChannelListener API进行事件通知。在创建Channel时，就赋予IO线程，用于执行所有的ChannelListener回调方法。
+####IOWorker区分IO线程和工作线程，创建一个工作线程">
+  
+    <link rel="alternate" href="/atom.xml" title="青蜂侠" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">青蜂侠</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-undertow core" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/post/undertow-core/" class="article-date">
+  <time datetime="2015-08-06T09:02:00.000Z" itemprop="datePublished">2015-08-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      undertow core
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###XNIO<br>undertow 是以<a href="https://github.com/xnio/xnio" target="_blank" rel="external">XNIO</a>为实现核心。XNIO有两个核心概念：</p>
+<p>####Channel<br>Channel，是传输管道的抽象概念，在NIO的Channel上进行的扩展加强，使用ChannelListener API进行事件通知。在创建Channel时，就赋予IO线程，用于执行所有的ChannelListener回调方法。</p>
+<p>####IOWorker<br>区分IO线程和工作线程，创建一个工作线程池可以用来执行阻塞任务。一般情况下，非阻塞的Handler由IO线程执行，而阻塞任务比如Servlet则被调度到工作线程池执行。这样就很好的区分了阻塞和非阻塞的两种情形。</p>
+<ul>
+<li>WORKER_IO_THREADS, IO thread处理非阻塞任务，要保证不做阻塞操作，因为很多连接同时用到这类线程，类似于nodejs中的loop，这个线程只要有任务就去执行，实际配置时每个CPU一个线程比较好。</li>
+<li>WORKER_TASK_CORE_THREADS，用于执行阻塞任务，从线程池中获得，任务完成后返回到线程池中。因为不同应用对应的服务器负载不同，所以不易给出具体数值，一般建议每个CPU core设置10个。</li>
+</ul>
+<p>我们知道NIO的基本要求是不阻塞当前线程的执行，对于非阻塞请求的结果，可以用两种方式获得：一种是对于请求很快返回一个引用（如JDK中Future，XNIO中称为IoFuture，其中很多方法是类似的），过一段时间再查询结果；还有一种是当结果就绪时，调用事先注册的回调方法来通知（如NIO2的CompletionHandler，XNIO的ChannelListener）。显而易见后者效率更高一些，避免了数据未就绪情景下的无用处理过程。但JDK7之前无法将函数作为方法参数，所以只能用Java的匿名内部类来模拟函数式方法，造成代码嵌套层次过多，难以理解和维护，所以Netty和XNIO这样的框架通过调度方法调用过程，简化了编程工作。</p>
+<p>XNIO和Netty都对ByteBuffer进行池化管理，简单来说就是开发者在程序开始时就计划好读写缓存区大小，统一分配好放到池中，Xnio中有Pool和Pooled接口用来管理池化缓存区。开发过高并发应用就知道，JVM GC经常出现并难以控制是很头疼的问题。我们通常在接收网络数据时，往往简单的new出一块数据区，填充，解析，使用，最后丢弃，这种方法随着大量的数据读入，必然造成GC反复出现。重用缓存区就可以在这个方面解决一部分问题。</p>
+<p>和Netty的ChannelHandler不同，XNIO对应的ChannelListener只有一个方法handleEvent()，也就意味着所有的事件都要经由这个方法。在实际实行过程中，会进行若干状态机的转变，比如在服务器端，开始时accept状态就绪，当连接建立后转变为可读或者可写状态。请参见下面的例子。</p>
+<p>除了<strong>Channel</strong> 和 <strong>IOWorker</strong> 两个重要的基础，XNIO还提供了<strong>SSL支持</strong></p>
+<h3 id="undertow-core"><a href="#undertow-core" class="headerlink" title="undertow core"></a>undertow core</h3><p>####Listeners<br>目前undertow中支持的Listner类型主要有</p>
+<ul>
+<li>HTTP</li>
+<li>HTTPS</li>
+<li>AJP</li>
+<li>HTTP2</li>
+</ul>
+<p>####Handler<br>undertow原生提供了io.undertow.server.HttpHandler，接口定义比较简单：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">HttpHandler</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">handleRequest</span><span class="params">(HttpServerExchange exchange)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>undertow中并没有pipeline的概念，但是可以在构建hanlder时指定next，如下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SetHeaderHandler</span> <span class="keyword">implements</span> <span class="title">HttpHandler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> HttpString header;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String value;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> HttpHandler next;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SetHeaderHandler</span><span class="params">(<span class="keyword">final</span> HttpHandler next, <span class="keyword">final</span> String header, <span class="keyword">final</span> String value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">        <span class="keyword">this</span>.header = <span class="keyword">new</span> HttpString(header);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleRequest</span><span class="params">(<span class="keyword">final</span> HttpServerExchange exchange)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        exchange.getResponseHeaders().put(header, value);</span><br><span class="line">        next.handleRequest(exchange);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>或者类似下面的方式，只做自身逻辑的处理，不做传递：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FilterHandler</span> <span class="keyword">implements</span> <span class="title">HttpHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;DispatcherType, List&lt;ManagedFilter&gt;&gt; filters;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;DispatcherType, Boolean&gt; asyncSupported;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> allowNonStandardWrappers;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> HttpHandler next;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FilterHandler</span><span class="params">(<span class="keyword">final</span> Map&lt;DispatcherType, List&lt;ManagedFilter&gt;&gt; filters, <span class="keyword">final</span> <span class="keyword">boolean</span> allowNonStandardWrappers, <span class="keyword">final</span> HttpHandler next)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.allowNonStandardWrappers = allowNonStandardWrappers;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">        <span class="keyword">this</span>.filters = <span class="keyword">new</span> EnumMap&lt;&gt;(filters);</span><br><span class="line">        Map&lt;DispatcherType, Boolean&gt; asyncSupported = <span class="keyword">new</span> EnumMap&lt;&gt;(DispatcherType.class);</span><br><span class="line">        <span class="keyword">for</span>(Map.Entry&lt;DispatcherType, List&lt;ManagedFilter&gt;&gt; entry : filters.entrySet()) &#123;</span><br><span class="line">            <span class="keyword">boolean</span> supported = <span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">for</span>(ManagedFilter i : entry.getValue()) &#123;</span><br><span class="line">                <span class="keyword">if</span>(!i.getFilterInfo().isAsyncSupported()) &#123;</span><br><span class="line">                    supported = <span class="keyword">false</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            asyncSupported.put(entry.getKey(), supported);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.asyncSupported = asyncSupported;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleRequest</span><span class="params">(<span class="keyword">final</span> HttpServerExchange exchange)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> ServletRequestContext servletRequestContext = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY);</span><br><span class="line">        ServletRequest request = servletRequestContext.getServletRequest();</span><br><span class="line">        ServletResponse response = servletRequestContext.getServletResponse();</span><br><span class="line">        DispatcherType dispatcher = servletRequestContext.getDispatcherType();</span><br><span class="line">        Boolean supported = asyncSupported.get(dispatcher);</span><br><span class="line">        <span class="keyword">if</span>(supported != <span class="keyword">null</span> &amp;&amp; ! supported) &#123;</span><br><span class="line">            exchange.putAttachment(AsyncContextImpl.ASYNC_SUPPORTED, <span class="keyword">false</span>    );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> List&lt;ManagedFilter&gt; filters = <span class="keyword">this</span>.filters.get(dispatcher);</span><br><span class="line">        <span class="keyword">if</span>(filters == <span class="keyword">null</span>) &#123;</span><br><span class="line">            next.handleRequest(exchange);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> FilterChainImpl filterChain = <span class="keyword">new</span> FilterChainImpl(exchange, filters, next, allowNonStandardWrappers);</span><br><span class="line">            filterChain.doFilter(request, response);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>####组装服务器<br>1.创建XNIO Workder<br>2.创建 XNIO SSL实例<br>3.Create an instance of the relevant Undertow listener class<br>4.Open a server socket using XNIO and set its accept listener<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">Xnio xnio = Xnio.getInstance();</span><br><span class="line">XnioWorker worker = xnio.createWorker(OptionMap.builder()</span><br><span class="line">        .set(Options.WORKER_IO_THREADS, ioThreads)</span><br><span class="line">        .set(Options.WORKER_TASK_CORE_THREADS, workerThreads)</span><br><span class="line">        .set(Options.WORKER_TASK_MAX_THREADS, workerThreads)</span><br><span class="line">        .set(Options.TCP_NODELAY, <span class="keyword">true</span>)</span><br><span class="line">        .getMap());</span><br><span class="line">OptionMap socketOptions = OptionMap.builder()</span><br><span class="line">        .set(Options.WORKER_IO_THREADS, ioThreads)</span><br><span class="line">        .set(Options.TCP_NODELAY, <span class="keyword">true</span>)</span><br><span class="line">        .set(Options.REUSE_ADDRESSES, <span class="keyword">true</span>)</span><br><span class="line">        .getMap();</span><br><span class="line">Pool&lt;ByteBuffer&gt; buffers = <span class="keyword">new</span> ByteBufferSlicePool(BufferAllocator.DIRECT_BYTE_BUFFER_ALLOCATOR,bufferSize, bufferSize * buffersPerRegion);</span><br><span class="line"><span class="keyword">if</span> (listener.type == ListenerType.AJP) &#123;</span><br><span class="line">    AjpOpenListener openListener = <span class="keyword">new</span> AjpOpenListener(buffers, serverOptions, bufferSize);</span><br><span class="line">    openListener.setRootHandler(rootHandler);</span><br><span class="line">    ChannelListener&lt;AcceptingChannel&lt;StreamConnection&gt;&gt; acceptListener = ChannelListeners.openListenerAdapter(openListener);</span><br><span class="line">    AcceptingChannel&lt;? extends StreamConnection&gt; server = worker.createStreamConnectionServer(<span class="keyword">new</span> InetSocketAddress(Inet4Address.getByName(listener.host), listener.port), acceptListener, socketOptions);</span><br><span class="line">    server.resumeAccepts();</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (listener.type == ListenerType.HTTP) &#123;</span><br><span class="line">    HttpOpenListener openListener = <span class="keyword">new</span> HttpOpenListener(buffers, OptionMap.builder().set(UndertowOptions.BUFFER_PIPELINED_DATA, <span class="keyword">true</span>).addAll(serverOptions).getMap(), bufferSize);</span><br><span class="line">    openListener.setRootHandler(rootHandler);</span><br><span class="line">    ChannelListener&lt;AcceptingChannel&lt;StreamConnection&gt;&gt; acceptListener = ChannelListeners.openListenerAdapter(openListener);</span><br><span class="line">    AcceptingChannel&lt;? extends StreamConnection&gt; server = worker.createStreamConnectionServer(<span class="keyword">new</span> InetSocketAddress(Inet4Address.getByName(listener.host), listener.port), acceptListener, socketOptions);</span><br><span class="line">    server.resumeAccepts();</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (listener.type == ListenerType.HTTPS)&#123;</span><br><span class="line">    HttpOpenListener openListener = <span class="keyword">new</span> HttpOpenListener(buffers, OptionMap.builder().set(UndertowOptions.BUFFER_PIPELINED_DATA, <span class="keyword">true</span>).addAll(serverOptions).getMap(), bufferSize);</span><br><span class="line">    openListener.setRootHandler(rootHandler);</span><br><span class="line">    ChannelListener&lt;AcceptingChannel&lt;StreamConnection&gt;&gt; acceptListener = ChannelListeners.openListenerAdapter(openListener);</span><br><span class="line">    XnioSsl xnioSsl;</span><br><span class="line">    <span class="keyword">if</span>(listener.sslContext != <span class="keyword">null</span>) &#123;</span><br><span class="line">        xnioSsl = <span class="keyword">new</span> JsseXnioSsl(xnio, OptionMap.create(Options.USE_DIRECT_BUFFERS, <span class="keyword">true</span>), listener.sslContext);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        xnioSsl = xnio.getSslProvider(listener.keyManagers, listener.trustManagers, OptionMap.create(Options.USE_DIRECT_BUFFERS, <span class="keyword">true</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    AcceptingChannel &lt;SslConnection&gt; sslServer = xnioSsl.createSslConnectionServer(worker, <span class="keyword">new</span> InetSocketAddress(Inet4Address.getByName(listener.host), listener.port), (ChannelListener) acceptListener, socketOptions);</span><br><span class="line">    sslServer.resumeAccepts();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>###undertow servlet<br>类似与jetty，undertow 也可以部署采用部署war包的方式启动项目：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">DeploymentInfo servletBuilder = Servlets.deployment()</span><br><span class="line">        .setClassLoader(ServletServer.class.getClassLoader())</span><br><span class="line">        .setContextPath(<span class="string">"/myapp"</span>)</span><br><span class="line">        .setDeploymentName(<span class="string">"test.war"</span>)</span><br><span class="line">        .addServlets(</span><br><span class="line">                Servlets.servlet(<span class="string">"MessageServlet"</span>, MessageServlet.class)</span><br><span class="line">                        .addInitParam(<span class="string">"message"</span>, <span class="string">"Hello World"</span>)</span><br><span class="line">                        .addMapping(<span class="string">"/*"</span>),</span><br><span class="line">                Servlets.servlet(<span class="string">"MyServlet"</span>, MessageServlet.class)</span><br><span class="line">                        .addInitParam(<span class="string">"message"</span>, <span class="string">"MyServlet"</span>)</span><br><span class="line">                        .addMapping(<span class="string">"/myservlet"</span>));</span><br><span class="line"></span><br><span class="line">DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);</span><br><span class="line">manager.deploy();</span><br><span class="line">PathHandler path = Handlers.path(Handlers.redirect(<span class="string">"/myapp"</span>))</span><br><span class="line">        .addPrefixPath(<span class="string">"/myapp"</span>, manager.start());</span><br><span class="line"></span><br><span class="line">Undertow server = Undertow.builder()</span><br><span class="line">        .addHttpListener(<span class="number">8080</span>, <span class="string">"localhost"</span>)</span><br><span class="line">        .setHandler(path)</span><br><span class="line">        .build();</span><br><span class="line">server.start();</span><br></pre></td></tr></table></figure></p>
+<p>###Refernces</p>
+<blockquote>
+<p><a href="http://wildfly.iteye.com/blog/2040374" target="_blank" rel="external">Undertow服务器基础分析 - 概述</a><br><a href="http://wildfly.iteye.com/blog/2040377" target="_blank" rel="external">Undertow服务器基础分析 - XNIO</a><br><a href="http://wildfly.iteye.com/blog/2040380" target="_blank" rel="external">Undertow服务器基础分析</a><br><a href="http://undertow.io/undertow-docs/undertow-docs-1.2.0/index.html" target="_blank" rel="external">undertow cookdoc</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/post/undertow-core/" data-id="cipak1vqw000wy95nuyjmrwaw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Undertow/">Undertow</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/post/ruleengine-clojure-impments/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Clojure实现规则引擎
+        
+      </div>
+    </a>
+  
+  
+    <a href="/post/compojure-hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Compojure hello world</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/SQL/">SQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/clojure/">clojure</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/programing/">programing</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/summarize/">summarize</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术总结/">技术总结</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure/">Clojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure-ruleengine/">Clojure ruleengine</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idempotent/">Idempotent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-JVM/">Java JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-Index-SQL/">MySQL Index SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-MySQL/">SQL MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Java/">Spring Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Undertow/">Undertow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clojure-Compojure/">clojure Compojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/front-end-cross-domian/">front-end, cross-domian</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice/">microservice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice-design-patterns/">microservice design-patterns</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rime-输入法/">rime,输入法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc-pigeon/">rpc pigeon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrum-敏捷-大项目管理/">scrum 敏捷 大项目管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/">动态代码 Groovy OGNL SpEL MVEL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动静分离/">动静分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实时通信-comet-websocket/">实时通信 comet websocket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技术总结/">技术总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新年计划/">新年计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/管理/">管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统重构-设计模式/">系统重构 设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Clojure/" style="font-size: 20px;">Clojure</a> <a href="/tags/Clojure-ruleengine/" style="font-size: 10px;">Clojure ruleengine</a> <a href="/tags/Idempotent/" style="font-size: 10px;">Idempotent</a> <a href="/tags/Java-JVM/" style="font-size: 10px;">Java JVM</a> <a href="/tags/MySQL-Index-SQL/" style="font-size: 10px;">MySQL Index SQL</a> <a href="/tags/SQL-MySQL/" style="font-size: 10px;">SQL MySQL</a> <a href="/tags/Spring-Java/" style="font-size: 16.67px;">Spring Java</a> <a href="/tags/Undertow/" style="font-size: 13.33px;">Undertow</a> <a href="/tags/clojure-Compojure/" style="font-size: 10px;">clojure Compojure</a> <a href="/tags/front-end-cross-domian/" style="font-size: 10px;">front-end, cross-domian</a> <a href="/tags/memcached/" style="font-size: 10px;">memcached</a> <a href="/tags/microservice/" style="font-size: 10px;">microservice</a> <a href="/tags/microservice-design-patterns/" style="font-size: 10px;">microservice design-patterns</a> <a href="/tags/rime-输入法/" style="font-size: 10px;">rime,输入法</a> <a href="/tags/rpc-pigeon/" style="font-size: 10px;">rpc pigeon</a> <a href="/tags/scrum-敏捷-大项目管理/" style="font-size: 10px;">scrum 敏捷 大项目管理</a> <a href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/" style="font-size: 10px;">动态代码 Groovy OGNL SpEL MVEL</a> <a href="/tags/动静分离/" style="font-size: 10px;">动静分离</a> <a href="/tags/实时通信-comet-websocket/" style="font-size: 10px;">实时通信 comet websocket</a> <a href="/tags/技术总结/" style="font-size: 16.67px;">技术总结</a> <a href="/tags/新年计划/" style="font-size: 13.33px;">新年计划</a> <a href="/tags/管理/" style="font-size: 13.33px;">管理</a> <a href="/tags/系统重构-设计模式/" style="font-size: 10px;">系统重构 设计模式</a> <a href="/tags/转载/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/post/bigproj-in-scrum/">Scrum中大项目管理</a>
+          </li>
+        
+          <li>
+            <a href="/post/dynamic-code-in-java/">Java中使用动态代码</a>
+          </li>
+        
+          <li>
+            <a href="/post/system-reconstruct-summary/">业务系统重构总结</a>
+          </li>
+        
+          <li>
+            <a href="/post/service-design-patterns-practices/">服务化设计模式实践</a>
+          </li>
+        
+          <li>
+            <a href="/post/brower-server-msg/">浏览器与服务器的消息通信</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 陈景广<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>青蜂侠</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这是学习「深入理解Java虚拟机:JVM高级特性与最佳实践(第2版)」时记录的笔记，共享出来。
+图片可以直接下载：下载地址。
+运行时数据区程序计数器（ProgramCounter Register）每个线程都有独立的程序计数器一块较小的内存空间，可以看作当前线程所执行的字节码的行号指示器虚拟机栈（VM Stack)线程私有，生命周期与线程相同每个方法执行时都会创建一个帧栈，用于存储局部变量表、操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="青蜂侠">
+<meta property="og:url" content="http://yoursite.com/post/jvm-notes/index.html">
+<meta property="og:site_name" content="青蜂侠">
+<meta property="og:description" content="这是学习「深入理解Java虚拟机:JVM高级特性与最佳实践(第2版)」时记录的笔记，共享出来。
+图片可以直接下载：下载地址。
+运行时数据区程序计数器（ProgramCounter Register）每个线程都有独立的程序计数器一块较小的内存空间，可以看作当前线程所执行的字节码的行号指示器虚拟机栈（VM Stack)线程私有，生命周期与线程相同每个方法执行时都会创建一个帧栈，用于存储局部变量表、操作">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/JVM.png">
+<meta property="og:updated_time" content="2015-08-06T09:08:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="青蜂侠">
+<meta name="twitter:description" content="这是学习「深入理解Java虚拟机:JVM高级特性与最佳实践(第2版)」时记录的笔记，共享出来。
+图片可以直接下载：下载地址。
+运行时数据区程序计数器（ProgramCounter Register）每个线程都有独立的程序计数器一块较小的内存空间，可以看作当前线程所执行的字节码的行号指示器虚拟机栈（VM Stack)线程私有，生命周期与线程相同每个方法执行时都会创建一个帧栈，用于存储局部变量表、操作">
+<meta name="twitter:image" content="http://7xkbey.com1.z0.glb.clouddn.com/JVM.png">
+  
+    <link rel="alternate" href="/atom.xml" title="青蜂侠" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">青蜂侠</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-jvm学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/post/jvm-notes/" class="article-date">
+  <time datetime="2015-07-16T12:55:00.000Z" itemprop="datePublished">2015-07-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这是学习<a href="http://www.amazon.cn/gp/product/B00D2ID4PK?psc=1&amp;ref_=oh_aui_search_detailpage" target="_blank" rel="external">「深入理解Java虚拟机:JVM高级特性与最佳实践(第2版)」</a>时记录的笔记，共享出来。</p>
+<p><img src="http://7xkbey.com1.z0.glb.clouddn.com/JVM.png" alt=""><br>图片可以直接下载：<a href="http://7xkbey.com1.z0.glb.clouddn.com/JVM.png" target="_blank" rel="external">下载地址</a>。</p>
+<h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><h3 id="程序计数器（ProgramCounter-Register）"><a href="#程序计数器（ProgramCounter-Register）" class="headerlink" title="程序计数器（ProgramCounter Register）"></a>程序计数器（ProgramCounter Register）</h3><h4 id="每个线程都有独立的程序计数器"><a href="#每个线程都有独立的程序计数器" class="headerlink" title="每个线程都有独立的程序计数器"></a>每个线程都有独立的程序计数器</h4><h4 id="一块较小的内存空间，可以看作当前线程所执行的字节码的行号指示器"><a href="#一块较小的内存空间，可以看作当前线程所执行的字节码的行号指示器" class="headerlink" title="一块较小的内存空间，可以看作当前线程所执行的字节码的行号指示器"></a>一块较小的内存空间，可以看作当前线程所执行的字节码的行号指示器</h4><h3 id="虚拟机栈（VM-Stack"><a href="#虚拟机栈（VM-Stack" class="headerlink" title="虚拟机栈（VM Stack)"></a>虚拟机栈（VM Stack)</h3><h4 id="线程私有，生命周期与线程相同"><a href="#线程私有，生命周期与线程相同" class="headerlink" title="线程私有，生命周期与线程相同"></a>线程私有，生命周期与线程相同</h4><h4 id="每个方法执行时都会创建一个帧栈，用于存储局部变量表、操作数栈、动态链接、方法出口等信息"><a href="#每个方法执行时都会创建一个帧栈，用于存储局部变量表、操作数栈、动态链接、方法出口等信息" class="headerlink" title="每个方法执行时都会创建一个帧栈，用于存储局部变量表、操作数栈、动态链接、方法出口等信息"></a>每个方法执行时都会创建一个帧栈，用于存储局部变量表、操作数栈、动态链接、方法出口等信息</h4><h5 id="局部变量表存放了编译期可知的各种基本数据类型，对象引用和returnAddress"><a href="#局部变量表存放了编译期可知的各种基本数据类型，对象引用和returnAddress" class="headerlink" title="局部变量表存放了编译期可知的各种基本数据类型，对象引用和returnAddress"></a>局部变量表存放了编译期可知的各种基本数据类型，对象引用和returnAddress</h5><h3 id="本地方法栈-Native-Method-Stack"><a href="#本地方法栈-Native-Method-Stack" class="headerlink" title="本地方法栈(Native Method Stack)"></a>本地方法栈(Native Method Stack)</h3><h4 id="与虚拟机栈类似，但只为Native方法服务"><a href="#与虚拟机栈类似，但只为Native方法服务" class="headerlink" title="与虚拟机栈类似，但只为Native方法服务"></a>与虚拟机栈类似，但只为Native方法服务</h4><h3 id="方法区（Method-Area"><a href="#方法区（Method-Area" class="headerlink" title="方法区（Method Area)"></a>方法区（Method Area)</h3><h4 id="用于存储已经被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码"><a href="#用于存储已经被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码" class="headerlink" title="用于存储已经被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码"></a>用于存储已经被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码</h4><h4 id="Permanent-Generation（保存虚拟机自己的静态-refective-数据"><a href="#Permanent-Generation（保存虚拟机自己的静态-refective-数据" class="headerlink" title="Permanent Generation（保存虚拟机自己的静态(refective)数据"></a>Permanent Generation（保存虚拟机自己的静态(refective)数据</h4><p>主要存放加载的Class类级别静态对象如class本身，method，field等等<br>permanent generation空间不足会引发full GC）</p>
+<h3 id="堆（Heap"><a href="#堆（Heap" class="headerlink" title="堆（Heap)"></a>堆（Heap)</h3><h4 id="被所有线程共享的一块内存区域"><a href="#被所有线程共享的一块内存区域" class="headerlink" title="被所有线程共享的一块内存区域"></a>被所有线程共享的一块内存区域</h4><h4 id="也成为GC堆，是垃圾收集器管理的主要区域"><a href="#也成为GC堆，是垃圾收集器管理的主要区域" class="headerlink" title="也成为GC堆，是垃圾收集器管理的主要区域"></a>也成为GC堆，是垃圾收集器管理的主要区域</h4><h4 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h4><h5 id="堆内存布局"><a href="#堆内存布局" class="headerlink" title="堆内存布局"></a>堆内存布局</h5><h6 id="Eden-存放新生的对象"><a href="#Eden-存放新生的对象" class="headerlink" title="Eden:存放新生的对象"></a>Eden:存放新生的对象</h6><p>####### 对象优先分配至Eden区，当空间不足时，将触发MinorGC</p>
+<p>####### MinorGC：新生代GC，指发生在新生代的拉圾收集动作，MinorGC非常频繁，一般回收速度也非常快</p>
+<h6 id="Survivor-Space，主要用于存储垃圾回收之后的存活对象"><a href="#Survivor-Space，主要用于存储垃圾回收之后的存活对象" class="headerlink" title="Survivor Space，主要用于存储垃圾回收之后的存活对象"></a>Survivor Space，主要用于存储垃圾回收之后的存活对象</h6><h6 id="Old-Generation：用于存放生命周期较长的大对象"><a href="#Old-Generation：用于存放生命周期较长的大对象" class="headerlink" title="Old Generation：用于存放生命周期较长的大对象"></a>Old Generation：用于存放生命周期较长的大对象</h6><p>####### MajorGC/FullGC(老年代GC): 发生在老年代的GC,出现了MajorGC，通常伴随至少一次MinorGC,MajorGC速度通常比MinorGC慢10倍以上。</p>
+<p>####### 大对象</p>
+<p>####### 长期存活的对象</p>
+<p>######## 对象每在Survivor经历一次MinorGC Age增加1，当增加到15时就直接晋升到老年代</p>
+<p>######## 如果在Survivor空间中相同年龄所有对象大小的总和大于Suvivor空间的一半，年龄大于或等于该年龄段对象就可以直接进入老年代</p>
+<h3 id="内存布局"><a href="#内存布局" class="headerlink" title="内存布局"></a>内存布局</h3><h2 id="执行引擎"><a href="#执行引擎" class="headerlink" title="执行引擎"></a>执行引擎</h2><h3 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h3><h4 id="类加载时机（必须进行初始化的时机）"><a href="#类加载时机（必须进行初始化的时机）" class="headerlink" title="类加载时机（必须进行初始化的时机）"></a>类加载时机（必须进行初始化的时机）</h4><h5 id="遇到new-getstatic-putstatic-invokestatic四条指令时，如果类没有进行初始化，需要初始化操作"><a href="#遇到new-getstatic-putstatic-invokestatic四条指令时，如果类没有进行初始化，需要初始化操作" class="headerlink" title="遇到new,getstatic,putstatic,invokestatic四条指令时，如果类没有进行初始化，需要初始化操作"></a>遇到new,getstatic,putstatic,invokestatic四条指令时，如果类没有进行初始化，需要初始化操作</h5><h6 id="使用new关键字初始化对象"><a href="#使用new关键字初始化对象" class="headerlink" title="使用new关键字初始化对象"></a>使用new关键字初始化对象</h6><h6 id="读取或设置一个类的静态字段（被final修饰，或者编译器把结果放入静态池的静态字段除外）"><a href="#读取或设置一个类的静态字段（被final修饰，或者编译器把结果放入静态池的静态字段除外）" class="headerlink" title="读取或设置一个类的静态字段（被final修饰，或者编译器把结果放入静态池的静态字段除外）"></a>读取或设置一个类的静态字段（被final修饰，或者编译器把结果放入静态池的静态字段除外）</h6><h6 id="调用一个类的静态方法时"><a href="#调用一个类的静态方法时" class="headerlink" title="调用一个类的静态方法时"></a>调用一个类的静态方法时</h6><h5 id="当初始化一个类的时候，发现其父类还没有进行初始化"><a href="#当初始化一个类的时候，发现其父类还没有进行初始化" class="headerlink" title="当初始化一个类的时候，发现其父类还没有进行初始化"></a>当初始化一个类的时候，发现其父类还没有进行初始化</h5><h5 id="使用java-lang-reflect包的方法对类进行反射调用的时候"><a href="#使用java-lang-reflect包的方法对类进行反射调用的时候" class="headerlink" title="使用java.lang.reflect包的方法对类进行反射调用的时候"></a>使用java.lang.reflect包的方法对类进行反射调用的时候</h5><h5 id="虚拟机启动时，用户需要指定要执行的主类，虚拟机会先初始化这个主类"><a href="#虚拟机启动时，用户需要指定要执行的主类，虚拟机会先初始化这个主类" class="headerlink" title="虚拟机启动时，用户需要指定要执行的主类，虚拟机会先初始化这个主类"></a>虚拟机启动时，用户需要指定要执行的主类，虚拟机会先初始化这个主类</h5><h5 id="当使用JDK7以上的动态语言支持"><a href="#当使用JDK7以上的动态语言支持" class="headerlink" title="当使用JDK7以上的动态语言支持"></a>当使用JDK7以上的动态语言支持</h5><h4 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h4><h5 id="加载（Loading"><a href="#加载（Loading" class="headerlink" title="加载（Loading)"></a>加载（Loading)</h5><h6 id="通过一个类的权限定名获取定义此类的二进制字节流"><a href="#通过一个类的权限定名获取定义此类的二进制字节流" class="headerlink" title="通过一个类的权限定名获取定义此类的二进制字节流"></a>通过一个类的权限定名获取定义此类的二进制字节流</h6><p>####### zip包等</p>
+<p>####### 网络中获取</p>
+<p>####### 运行时计算生成，用的最多的为动态代理技术</p>
+<p>####### 其他文件生成，典型如JSP</p>
+<p>####### 数据库中读取</p>
+<h6 id="将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构"><a href="#将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构" class="headerlink" title="将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构"></a>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</h6><h6 id="在内存中生成一个代表这个类的java-lang-class对象，作为方法区这个类的各种数据的访问入口"><a href="#在内存中生成一个代表这个类的java-lang-class对象，作为方法区这个类的各种数据的访问入口" class="headerlink" title="在内存中生成一个代表这个类的java.lang.class对象，作为方法区这个类的各种数据的访问入口"></a>在内存中生成一个代表这个类的java.lang.class对象，作为方法区这个类的各种数据的访问入口</h6><h5 id="验证（Verification"><a href="#验证（Verification" class="headerlink" title="验证（Verification)"></a>验证（Verification)</h5><h6 id="文件格式验证"><a href="#文件格式验证" class="headerlink" title="文件格式验证"></a>文件格式验证</h6><h6 id="原数据验证"><a href="#原数据验证" class="headerlink" title="原数据验证"></a>原数据验证</h6><h6 id="字节码验证"><a href="#字节码验证" class="headerlink" title="字节码验证"></a>字节码验证</h6><h6 id="符号引用验证"><a href="#符号引用验证" class="headerlink" title="符号引用验证"></a>符号引用验证</h6><h5 id="准备（preparation）"><a href="#准备（preparation）" class="headerlink" title="准备（preparation）"></a>准备（preparation）</h5><h6 id="正式为类变量分配内存并设置类变量初始值的阶段，这些变量所使用的内存都将在方法区分配"><a href="#正式为类变量分配内存并设置类变量初始值的阶段，这些变量所使用的内存都将在方法区分配" class="headerlink" title="正式为类变量分配内存并设置类变量初始值的阶段，这些变量所使用的内存都将在方法区分配"></a>正式为类变量分配内存并设置类变量初始值的阶段，这些变量所使用的内存都将在方法区分配</h6><h6 id="分配内存的变量仅为类变量（static修饰的变量），而不包括实例变量"><a href="#分配内存的变量仅为类变量（static修饰的变量），而不包括实例变量" class="headerlink" title="分配内存的变量仅为类变量（static修饰的变量），而不包括实例变量"></a>分配内存的变量仅为类变量（static修饰的变量），而不包括实例变量</h6><h5 id="解析-Resolution"><a href="#解析-Resolution" class="headerlink" title="解析(Resolution) :"></a>解析(Resolution) :</h5><h6 id="某些情况下可以在初始化之后开始，为了支持Java的运行时绑定"><a href="#某些情况下可以在初始化之后开始，为了支持Java的运行时绑定" class="headerlink" title="某些情况下可以在初始化之后开始，为了支持Java的运行时绑定"></a>某些情况下可以在初始化之后开始，为了支持Java的运行时绑定</h6><h6 id="虚拟机将常量池内的符号引用替换为直接引用的过程"><a href="#虚拟机将常量池内的符号引用替换为直接引用的过程" class="headerlink" title="虚拟机将常量池内的符号引用替换为直接引用的过程"></a>虚拟机将常量池内的符号引用替换为直接引用的过程</h6><p>####### 符号引用</p>
+<p>####### 直接引用</p>
+<h5 id="初始化-Initialization"><a href="#初始化-Initialization" class="headerlink" title="初始化(Initialization)"></a>初始化(Initialization)</h5><h4 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h4><h5 id="虚拟机角度"><a href="#虚拟机角度" class="headerlink" title="虚拟机角度"></a>虚拟机角度</h5><h6 id="Bootstrap-ClassLoader-c-实现，虚拟机的一部分）"><a href="#Bootstrap-ClassLoader-c-实现，虚拟机的一部分）" class="headerlink" title="Bootstrap ClassLoader(c++实现，虚拟机的一部分）"></a>Bootstrap ClassLoader(c++实现，虚拟机的一部分）</h6><h6 id="其他类加载器（独立于虚拟机存在）"><a href="#其他类加载器（独立于虚拟机存在）" class="headerlink" title="其他类加载器（独立于虚拟机存在）"></a>其他类加载器（独立于虚拟机存在）</h6><h5 id="开发者角度"><a href="#开发者角度" class="headerlink" title="开发者角度"></a>开发者角度</h5><h6 id="Bootstrap-ClassLoader（启动类加载器）"><a href="#Bootstrap-ClassLoader（启动类加载器）" class="headerlink" title="Bootstrap ClassLoader（启动类加载器）"></a>Bootstrap ClassLoader（启动类加载器）</h6><p>####### 负责将<java_home>/lib目录中的，或者被-Xbootclasspath参数指定的路中，且是虚拟机识别的类库加载到虚拟机内存中</java_home></p>
+<h6 id="Extension-ClassLoader-扩展类加载器"><a href="#Extension-ClassLoader-扩展类加载器" class="headerlink" title="Extension ClassLoader(扩展类加载器)"></a>Extension ClassLoader(扩展类加载器)</h6><p>####### 加载<java_home>/lib/ext目录，或者被java.ext.dirs系统变量指定的路径内的所有类库</java_home></p>
+<p>####### 开发者可直接使用</p>
+<h6 id="Application-ClassLoader-应用程序类加载器）"><a href="#Application-ClassLoader-应用程序类加载器）" class="headerlink" title="Application ClassLoader(应用程序类加载器）"></a>Application ClassLoader(应用程序类加载器）</h6><h5 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h5><h6 id="将类加载请求委派给父类加载器完成，父类同样如此"><a href="#将类加载请求委派给父类加载器完成，父类同样如此" class="headerlink" title="将类加载请求委派给父类加载器完成，父类同样如此"></a>将类加载请求委派给父类加载器完成，父类同样如此</h6><h6 id="当父加载器无法完成加载时，子加载器才尝试自己加载"><a href="#当父加载器无法完成加载时，子加载器才尝试自己加载" class="headerlink" title="当父加载器无法完成加载时，子加载器才尝试自己加载"></a>当父加载器无法完成加载时，子加载器才尝试自己加载</h6><h5 id="破坏双亲委派模型"><a href="#破坏双亲委派模型" class="headerlink" title="破坏双亲委派模型"></a>破坏双亲委派模型</h5><h3 id="虚拟机字节码执行引擎"><a href="#虚拟机字节码执行引擎" class="headerlink" title="虚拟机字节码执行引擎"></a>虚拟机字节码执行引擎</h3><h4 id="栈帧"><a href="#栈帧" class="headerlink" title="栈帧"></a>栈帧</h4><h5 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h5><h6 id="变量值存储空间，存放方法参数和方法内定义的局部变量"><a href="#变量值存储空间，存放方法参数和方法内定义的局部变量" class="headerlink" title="变量值存储空间，存放方法参数和方法内定义的局部变量"></a>变量值存储空间，存放方法参数和方法内定义的局部变量</h6><h6 id="Variable-Slot为最小单位"><a href="#Variable-Slot为最小单位" class="headerlink" title="Variable Slot为最小单位"></a>Variable Slot为最小单位</h6><h6 id="对于64位数据类型，虚拟机以高位对齐的方式分配两个连续的Slot"><a href="#对于64位数据类型，虚拟机以高位对齐的方式分配两个连续的Slot" class="headerlink" title="对于64位数据类型，虚拟机以高位对齐的方式分配两个连续的Slot"></a>对于64位数据类型，虚拟机以高位对齐的方式分配两个连续的Slot</h6><h5 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h5><h6 id="Last-In-First-Out栈"><a href="#Last-In-First-Out栈" class="headerlink" title="Last In First Out栈"></a>Last In First Out栈</h6><h5 id="动态连接"><a href="#动态连接" class="headerlink" title="动态连接"></a>动态连接</h5><h6 id="每个都包含一个指向运行时常量池中该栈帧所属方法的引用"><a href="#每个都包含一个指向运行时常量池中该栈帧所属方法的引用" class="headerlink" title="每个都包含一个指向运行时常量池中该栈帧所属方法的引用"></a>每个都包含一个指向运行时常量池中该栈帧所属方法的引用</h6><h5 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h5><h5 id="其他额外信息"><a href="#其他额外信息" class="headerlink" title="其他额外信息"></a>其他额外信息</h5><h2 id="本地库接口"><a href="#本地库接口" class="headerlink" title="本地库接口"></a>本地库接口</h2><h2 id="垃圾收集"><a href="#垃圾收集" class="headerlink" title="垃圾收集"></a>垃圾收集</h2><h3 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h3><h4 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h4><h4 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h4><h5 id="目前的商业虚拟机都使用此算反回收新生代"><a href="#目前的商业虚拟机都使用此算反回收新生代" class="headerlink" title="目前的商业虚拟机都使用此算反回收新生代"></a>目前的商业虚拟机都使用此算反回收新生代</h5><h4 id="标记-整理算法"><a href="#标记-整理算法" class="headerlink" title="标记-整理算法"></a>标记-整理算法</h4><h5 id="多用于回收老年代"><a href="#多用于回收老年代" class="headerlink" title="多用于回收老年代"></a>多用于回收老年代</h5><h4 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><h4 id="Serial收集器"><a href="#Serial收集器" class="headerlink" title="Serial收集器"></a>Serial收集器</h4><h5 id="必须停止其他所有的工作线程"><a href="#必须停止其他所有的工作线程" class="headerlink" title="必须停止其他所有的工作线程"></a>必须停止其他所有的工作线程</h5><h5 id="Client模式下新生代的默认收集器"><a href="#Client模式下新生代的默认收集器" class="headerlink" title="Client模式下新生代的默认收集器"></a>Client模式下新生代的默认收集器</h5><h5 id="简单高效"><a href="#简单高效" class="headerlink" title="简单高效"></a>简单高效</h5><h5 id="只使用一个CPUhuo一条收集线程"><a href="#只使用一个CPUhuo一条收集线程" class="headerlink" title="只使用一个CPUhuo一条收集线程"></a>只使用一个CPUhuo一条收集线程</h5><h4 id="SerialOld-收集器"><a href="#SerialOld-收集器" class="headerlink" title="SerialOld 收集器"></a>SerialOld 收集器</h4><h5 id="Serial收集器的老年代版本"><a href="#Serial收集器的老年代版本" class="headerlink" title="Serial收集器的老年代版本"></a>Serial收集器的老年代版本</h5><h4 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h4><h5 id="Serial的多线程版本"><a href="#Serial的多线程版本" class="headerlink" title="Serial的多线程版本"></a>Serial的多线程版本</h5><h4 id="Parallel-Scavenge收集器"><a href="#Parallel-Scavenge收集器" class="headerlink" title="Parallel Scavenge收集器"></a>Parallel Scavenge收集器</h4><h5 id="新生代收集器"><a href="#新生代收集器" class="headerlink" title="新生代收集器"></a>新生代收集器</h5><h5 id="达到可控的吞吐量"><a href="#达到可控的吞吐量" class="headerlink" title="达到可控的吞吐量"></a>达到可控的吞吐量</h5><h5 id="复制算法-1"><a href="#复制算法-1" class="headerlink" title="复制算法"></a>复制算法</h5><h4 id="ParallelOld收集器"><a href="#ParallelOld收集器" class="headerlink" title="ParallelOld收集器"></a>ParallelOld收集器</h4><h5 id="ParallelScavenge的老年代版本"><a href="#ParallelScavenge的老年代版本" class="headerlink" title="ParallelScavenge的老年代版本"></a>ParallelScavenge的老年代版本</h5><h5 id="使用多线程和标记-整理算法"><a href="#使用多线程和标记-整理算法" class="headerlink" title="使用多线程和标记-整理算法"></a>使用多线程和标记-整理算法</h5><h4 id="CMS-收集器"><a href="#CMS-收集器" class="headerlink" title="CMS 收集器"></a>CMS 收集器</h4><h5 id="依获取最短回收停顿时间为目标的收集器"><a href="#依获取最短回收停顿时间为目标的收集器" class="headerlink" title="依获取最短回收停顿时间为目标的收集器"></a>依获取最短回收停顿时间为目标的收集器</h5><h5 id="ConcurrentMark-Sweep-标记-清除算法）"><a href="#ConcurrentMark-Sweep-标记-清除算法）" class="headerlink" title="ConcurrentMark Sweep (标记-清除算法）"></a>ConcurrentMark Sweep (标记-清除算法）</h5><h6 id="初始标记"><a href="#初始标记" class="headerlink" title="初始标记"></a>初始标记</h6><p>####### 标记GC Root能直接关联到的对象，速度很快（Stop the world</p>
+<h6 id="并发标记"><a href="#并发标记" class="headerlink" title="并发标记"></a>并发标记</h6><p>####### 发生在GC Roots tracking阶段，可与用户线程一同运行</p>
+<h6 id="重新标记"><a href="#重新标记" class="headerlink" title="重新标记"></a>重新标记</h6><p>####### 修正并发标记期间，用户程序继续运行而导致标记产生变动的那一部分对象的标记记录（Stop the world)</p>
+<h6 id="并发清除"><a href="#并发清除" class="headerlink" title="并发清除"></a>并发清除</h6><h5 id="无法清除浮动垃圾（Floating-Garbage-可能出现ConCurrent-Mode-Failure"><a href="#无法清除浮动垃圾（Floating-Garbage-可能出现ConCurrent-Mode-Failure" class="headerlink" title="无法清除浮动垃圾（Floating Garbage),可能出现ConCurrent Mode Failure"></a>无法清除浮动垃圾（Floating Garbage),可能出现ConCurrent Mode Failure</h5><h5 id="标记-清除算法容易导致碎片，在分配大对象时，可能需要FullGC"><a href="#标记-清除算法容易导致碎片，在分配大对象时，可能需要FullGC" class="headerlink" title="标记-清除算法容易导致碎片，在分配大对象时，可能需要FullGC"></a>标记-清除算法容易导致碎片，在分配大对象时，可能需要FullGC</h5><h4 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h4><h5 id="面向服务器端的收集器"><a href="#面向服务器端的收集器" class="headerlink" title="面向服务器端的收集器"></a>面向服务器端的收集器</h5><h5 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h5><h6 id="并行与并发"><a href="#并行与并发" class="headerlink" title="并行与并发"></a>并行与并发</h6><h6 id="分代收集"><a href="#分代收集" class="headerlink" title="分代收集"></a>分代收集</h6><h6 id="可预测的停顿"><a href="#可预测的停顿" class="headerlink" title="可预测的停顿"></a>可预测的停顿</h6><h6 id="空间整合"><a href="#空间整合" class="headerlink" title="空间整合"></a>空间整合</h6><p>####### 整体看基于“标记-整理”算法</p>
+<p>####### 局部看基于“复制”算法实现</p>
+<p>####### 收集后不会产生内存空间碎片</p>
+<h5 id="将整个java-堆划分为多个大小相等的独立区域（Region"><a href="#将整个java-堆划分为多个大小相等的独立区域（Region" class="headerlink" title="将整个java 堆划分为多个大小相等的独立区域（Region)"></a>将整个java 堆划分为多个大小相等的独立区域（Region)</h5><h3 id="判断对象已死？"><a href="#判断对象已死？" class="headerlink" title="判断对象已死？"></a>判断对象已死？</h3><h4 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h4><h4 id="可达性分析"><a href="#可达性分析" class="headerlink" title="可达性分析"></a>可达性分析</h4><h5 id="GCRoots"><a href="#GCRoots" class="headerlink" title="GCRoots?"></a>GCRoots?</h5><h6 id="主要在全局性的引用（常量，或类静态属性）"><a href="#主要在全局性的引用（常量，或类静态属性）" class="headerlink" title="主要在全局性的引用（常量，或类静态属性）"></a>主要在全局性的引用（常量，或类静态属性）</h6><h6 id="执行上下文中（如栈帧里的本地变量表）"><a href="#执行上下文中（如栈帧里的本地变量表）" class="headerlink" title="执行上下文中（如栈帧里的本地变量表）"></a>执行上下文中（如栈帧里的本地变量表）</h6><h5 id="分析时，需要Stop-the-world-暂停所有线程的执行"><a href="#分析时，需要Stop-the-world-暂停所有线程的执行" class="headerlink" title="分析时，需要Stop the world,暂停所有线程的执行"></a>分析时，需要Stop the world,暂停所有线程的执行</h5><h3 id="GC类型"><a href="#GC类型" class="headerlink" title="GC类型"></a>GC类型</h3><h4 id="MinorGC：新生代GC，指发生在新生代的拉圾收集动作，MinorGC非常频繁，一般回收速度也非常快"><a href="#MinorGC：新生代GC，指发生在新生代的拉圾收集动作，MinorGC非常频繁，一般回收速度也非常快" class="headerlink" title="MinorGC：新生代GC，指发生在新生代的拉圾收集动作，MinorGC非常频繁，一般回收速度也非常快"></a>MinorGC：新生代GC，指发生在新生代的拉圾收集动作，MinorGC非常频繁，一般回收速度也非常快</h4><h4 id="MajorGC-FullGC-老年代GC-发生在老年代的GC-出现了MajorGC，通常伴随至少一次MinorGC-MajorGC速度通常比MinorGC慢10倍以上。"><a href="#MajorGC-FullGC-老年代GC-发生在老年代的GC-出现了MajorGC，通常伴随至少一次MinorGC-MajorGC速度通常比MinorGC慢10倍以上。" class="headerlink" title="MajorGC/FullGC(老年代GC): 发生在老年代的GC,出现了MajorGC，通常伴随至少一次MinorGC,MajorGC速度通常比MinorGC慢10倍以上。"></a>MajorGC/FullGC(老年代GC): 发生在老年代的GC,出现了MajorGC，通常伴随至少一次MinorGC,MajorGC速度通常比MinorGC慢10倍以上。</h4>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/post/jvm-notes/" data-id="cipak1vqe000py95nsyjq1v81" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java-JVM/">Java JVM</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/post/undefined/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          乐观锁(Optimistic Locking)与悲观锁(Pessimistic Locking)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/post/think-about-teamwork/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">团队问题的思考</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/SQL/">SQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/clojure/">clojure</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/programing/">programing</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/summarize/">summarize</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术总结/">技术总结</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure/">Clojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure-ruleengine/">Clojure ruleengine</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idempotent/">Idempotent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-JVM/">Java JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-Index-SQL/">MySQL Index SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-MySQL/">SQL MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Java/">Spring Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Undertow/">Undertow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clojure-Compojure/">clojure Compojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/front-end-cross-domian/">front-end, cross-domian</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice/">microservice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice-design-patterns/">microservice design-patterns</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rime-输入法/">rime,输入法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc-pigeon/">rpc pigeon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrum-敏捷-大项目管理/">scrum 敏捷 大项目管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/">动态代码 Groovy OGNL SpEL MVEL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动静分离/">动静分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实时通信-comet-websocket/">实时通信 comet websocket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技术总结/">技术总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新年计划/">新年计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/管理/">管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统重构-设计模式/">系统重构 设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Clojure/" style="font-size: 20px;">Clojure</a> <a href="/tags/Clojure-ruleengine/" style="font-size: 10px;">Clojure ruleengine</a> <a href="/tags/Idempotent/" style="font-size: 10px;">Idempotent</a> <a href="/tags/Java-JVM/" style="font-size: 10px;">Java JVM</a> <a href="/tags/MySQL-Index-SQL/" style="font-size: 10px;">MySQL Index SQL</a> <a href="/tags/SQL-MySQL/" style="font-size: 10px;">SQL MySQL</a> <a href="/tags/Spring-Java/" style="font-size: 16.67px;">Spring Java</a> <a href="/tags/Undertow/" style="font-size: 13.33px;">Undertow</a> <a href="/tags/clojure-Compojure/" style="font-size: 10px;">clojure Compojure</a> <a href="/tags/front-end-cross-domian/" style="font-size: 10px;">front-end, cross-domian</a> <a href="/tags/memcached/" style="font-size: 10px;">memcached</a> <a href="/tags/microservice/" style="font-size: 10px;">microservice</a> <a href="/tags/microservice-design-patterns/" style="font-size: 10px;">microservice design-patterns</a> <a href="/tags/rime-输入法/" style="font-size: 10px;">rime,输入法</a> <a href="/tags/rpc-pigeon/" style="font-size: 10px;">rpc pigeon</a> <a href="/tags/scrum-敏捷-大项目管理/" style="font-size: 10px;">scrum 敏捷 大项目管理</a> <a href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/" style="font-size: 10px;">动态代码 Groovy OGNL SpEL MVEL</a> <a href="/tags/动静分离/" style="font-size: 10px;">动静分离</a> <a href="/tags/实时通信-comet-websocket/" style="font-size: 10px;">实时通信 comet websocket</a> <a href="/tags/技术总结/" style="font-size: 16.67px;">技术总结</a> <a href="/tags/新年计划/" style="font-size: 13.33px;">新年计划</a> <a href="/tags/管理/" style="font-size: 13.33px;">管理</a> <a href="/tags/系统重构-设计模式/" style="font-size: 10px;">系统重构 设计模式</a> <a href="/tags/转载/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/post/bigproj-in-scrum/">Scrum中大项目管理</a>
+          </li>
+        
+          <li>
+            <a href="/post/dynamic-code-in-java/">Java中使用动态代码</a>
+          </li>
+        
+          <li>
+            <a href="/post/system-reconstruct-summary/">业务系统重构总结</a>
+          </li>
+        
+          <li>
+            <a href="/post/service-design-patterns-practices/">服务化设计模式实践</a>
+          </li>
+        
+          <li>
+            <a href="/post/brower-server-msg/">浏览器与服务器的消息通信</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 陈景广<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

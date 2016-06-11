@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Java中使用动态代码 | 青蜂侠</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="公司的项目主要基于Java平台，在实践中发现主要有两种方式可以实现:统一表达式语言，动态语言，如Groovy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中使用动态代码">
+<meta property="og:url" content="http://yoursite.com/post/dynamic-code-in-java/index.html">
+<meta property="og:site_name" content="青蜂侠">
+<meta property="og:description" content="公司的项目主要基于Java平台，在实践中发现主要有两种方式可以实现:统一表达式语言，动态语言，如Groovy">
+<meta property="og:updated_time" content="2016-06-02T13:51:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中使用动态代码">
+<meta name="twitter:description" content="公司的项目主要基于Java平台，在实践中发现主要有两种方式可以实现:统一表达式语言，动态语言，如Groovy">
+  
+    <link rel="alternate" href="/atom.xml" title="青蜂侠" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">青蜂侠</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Java中使用动态代码" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/post/dynamic-code-in-java/" class="article-date">
+  <time datetime="2016-05-25T13:50:00.000Z" itemprop="datePublished">2016-05-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java中使用动态代码
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>O2O互联网的运营开发最大的特点就是每次运营活动规则千奇百怪，需要有许多个性化的配置，如何例A活动需要针对新用户做发红包的活动，B活动针对全部用户做发红包活动，而在B活动中针对新用户发x面额的红包，而针对老用户发y面值的红包。两个活动规则差别较大，如果每次都个性化开发，会非常浪费时间，因此如何支持规则的动态配置是个很大的挑战。</p>
+<p>Java不是解决动态层问题的理想语言，这些动态层问题包括原型设计、脚本处理等。</p>
+<p>公司的项目主要基于Java平台，在实践中发现主要有两种方式可以实现：</p>
+<ul>
+<li>统一表达式语言</li>
+<li>动态语言，如Groovy</li>
+</ul>
+<h3 id="JUEL-Java-统一表达式语言"><a href="#JUEL-Java-统一表达式语言" class="headerlink" title="JUEL(Java 统一表达式语言)"></a>JUEL(Java 统一表达式语言)</h3><p>Java<strong>统一表达式语言</strong>（英语：Unified Expression Language，简称<strong>JUEL</strong>）是一种特殊用途的编程语言，主要在<a href="https://zh.wikipedia.org/wiki/Java" target="_blank" rel="external">Java</a> <a href="https://zh.wikipedia.org/wiki/Web%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F" target="_blank" rel="external">Web应用程序</a>用于将表达式嵌入到web页面。<a href="https://zh.wikipedia.org/wiki/Java" target="_blank" rel="external">Java</a>规范制定者和Java Web领域技术专家小组制定了统一的表达式语言。JUEL最初包含在<a href="https://zh.wikipedia.org/wiki/JSP" target="_blank" rel="external">JSP</a> 2.1规范JSR-245中，后来成为Java EE 7的一部分，改在JSR-341中定义。</p>
+<p>主要的开源实现有：<a href="https://commons.apache.org/proper/commons-ognl/" target="_blank" rel="external">OGNL</a> ，<a href="http://java-source.net/open-source/expression-languages/mvel" target="_blank" rel="external">MVEL</a> ，<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/expressions.html" target="_blank" rel="external">SpEL</a> ,<a href="http://java-source.net/open-source/expression-languages/juel" target="_blank" rel="external">JUEL</a> ,<a href="http://java-source.net/open-source/expression-languages/java-expression-language" target="_blank" rel="external">Java Expression Language (JEXL)</a> ,<a href="http://java-source.net/open-source/expression-languages/jeval" target="_blank" rel="external">JEval</a> ,<a href="http://java-source.net/open-source/expression-languages/jakarta-jxpath" target="_blank" rel="external">Jakarta JXPath</a> 等。这里主要介绍在实践中使用较多的MVEL、OGNL和SpEL。</p>
+<h4 id="OGNL-Object-Graph-Navigation-Library"><a href="#OGNL-Object-Graph-Navigation-Library" class="headerlink" title="OGNL(Object Graph Navigation Library)"></a>OGNL(Object Graph Navigation Library)</h4><p>在Struts 2 的标签库中都是使用OGNL表达式访问ApplicationContext中的对象数据，OGNL主要有三个重要因素：</p>
+<ul>
+<li>Expression</li>
+</ul>
+<p>　Expression是整个OGNL的核心内容，所有的OGNL操作都是针对表达式解析后进行的。通过Expression来告知OGNL操作到底要干些什么。因此，Expression其实是一个带有语法含义的字符串，整个字符串将规定操作的类型和内容。OGNL表达式支持大量Expression，如“链式访问对象”、表达式计算、甚至还支持Lambda表达式。</p>
+<ul>
+<li>Root对象：</li>
+</ul>
+<p>　　　　OGNL的Root对象可以理解为OGNL的操作对象。当我们指定了一个表达式的时候，我们需要指定这个表达式针对的是哪个具体的对象。而这个具体的对象就是Root对象，这就意味着，如果有一个OGNL表达式，那么我们需要针对Root对象来进行OGNL表达式的计算并且返回结果。</p>
+<ul>
+<li>ApplicationContext</li>
+</ul>
+<p>有个Root对象和Expression，我们就可以使用OGNL进行简单的操作了，如对Root对象的赋值与取值操作。但是，实际上在OGNL的内部，所有的操作都会在一个特定的数据环境中运行。这个数据环境就是ApplicationContext（上下文环境）。OGNL的上下文环境是一个Map结构，称之为OgnlContext。Root对象也会被添加到上下文环境当中去。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Foo foo = <span class="keyword">new</span> Foo();</span><br><span class="line">foo.setName(<span class="string">"test"</span>);</span><br><span class="line">Map&lt;String, Object&gt; context = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">context.put(<span class="string">"foo"</span>,foo);</span><br><span class="line">String expression = <span class="string">"foo.name == 'test'"</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Boolean result = (Boolean) Ognl.getValue(expression,context);</span><br><span class="line">    System.out.println(result);</span><br><span class="line">&#125; <span class="keyword">catch</span> (OgnlException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码就是判断对象foo的name属性是否为test。</p>
+<p>OGNL的具体语法参见<a href="https://commons.apache.org/proper/commons-ognl/language-guide.html" target="_blank" rel="external">OGNL language guide</a> 。</p>
+<h4 id="MVEL"><a href="#MVEL" class="headerlink" title="MVEL"></a><a href="https://github.com/mvel/mvel" target="_blank" rel="external">MVEL</a></h4><p>MVEL最初作为Mike Brock创建的 Valhalla项目的表达式计算器（expression evaluator）。Valhalla本身是一个早期的类似 Seam 的“开箱即用”的Web 应用框架，而 Valhalla 项目现在处于休眠状态， MVEL则成为一个继续积极发展的项目。相比最初的OGNL、JEXL和JUEL等项目，而它具有远超它们的性能、功能和易用性 - 特别是集成方面。它不会尝试另一种JVM语言，而是着重解决嵌入式脚本的问题。</p>
+<p>MVEL特别适用于受限环境 – 诸如由于内存或沙箱（sand-boxing）问题不能使用字节码生成。它不是试图重新发明Java，而是旨在提供一种Java程序员熟悉的语法，同时还加入了简短的表达式语法。</p>
+<p>MVEL主要使用在Drools，是<a href="http://www.jboss.org/drools/" target="_blank" rel="external">Drools规则引擎</a>不可分割的一部分。</p>
+<p>MVEL语法较为丰富，不仅包含了基本的属性表达式，布尔表达式，变量复制和方法调用，还支持函数定义，详情参见<a href="https://en.wikisource.org/wiki/MVEL_Language_Guide" target="_blank" rel="external">MVEL Language Guide</a> 。</p>
+<p>MVEL在执行语言时主要有解释模式（<strong>Interpreted Mode</strong>）和编译模式（<strong>Compiled Mode</strong> ）两种：</p>
+<ul>
+<li>解释模式（Interpreted Mode）是一个无状态的，动态解释执行，不需要负载表达式就可以执行相应的脚本。</li>
+<li>编译模式（Compiled Mode）需要在缓存中产生一个完全规范化表达式之后再执行。</li>
+</ul>
+<p>解释模式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//解释模式</span></span><br><span class="line">Foo foo = <span class="keyword">new</span> Foo();</span><br><span class="line">foo.setName(<span class="string">"test"</span>);</span><br><span class="line">Map context = <span class="keyword">new</span> HashMap();</span><br><span class="line">String expression = <span class="string">"foo.name == 'test'"</span>;</span><br><span class="line">VariableResolverFactory functionFactory = <span class="keyword">new</span> MapVariableResolverFactory(context);</span><br><span class="line">context.put(<span class="string">"foo"</span>,foo);</span><br><span class="line">Boolean result = (Boolean) MVEL.eval(expression,functionFactory);</span><br><span class="line">System.out.println(result);</span><br></pre></td></tr></table></figure>
+<p>编译模式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//编译模式</span></span><br><span class="line">Foo foo = <span class="keyword">new</span> Foo();foo.setName(<span class="string">"test"</span>);Map context = <span class="keyword">new</span> HashMap();String expression = <span class="string">"foo.name == 'test'"</span>;VariableResolverFactory functionFactory = <span class="keyword">new</span> MapVariableResolverFactory(context);context.put(<span class="string">"foo"</span>,foo);</span><br><span class="line">Serializable compileExpression = MVEL.compileExpression(expression);</span><br><span class="line">Boolean result = (Boolean) MVEL.executeExpression(compileExpression, context, functionFactory);</span><br></pre></td></tr></table></figure>
+<h4 id="SpEL"><a href="#SpEL" class="headerlink" title="SpEL"></a><a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/expressions.html" target="_blank" rel="external">SpEL</a></h4><p>SpEl(Spring表达式语言）是一个支持查询和操作运行时对象导航图功能的强大的表达式语言。 它的语法类似于传统EL，但提供额外的功能，最出色的就是函数调用和简单字符串的模板函数。SpEL类似于Struts2x中使用的OGNL表达式语言，能在运行时构建复杂表达式、存取对象图属性、对象方法调用等等，并且能与Spring功能完美整合，如能用来配置Bean定义。</p>
+<p>SpEL主要提供基本表达式、类相关表达式及集合相关表达式等，详细参见<a href="http://spring.cndocs.tk/expressions.html" target="_blank" rel="external">Spring 表达式语言 (SpEL)</a> 。</p>
+<p>类似与OGNL，SpEL具有expression(表达式)，Parser（解析器），EvaluationContext(上下文）等基本概念；类似与MVEL，SpEl也提供了解释模式和编译模式两种运行模式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//解释器模式</span></span><br><span class="line">Foo foo = <span class="keyword">new</span> Foo();</span><br><span class="line">foo.setName(<span class="string">"test"</span>);</span><br><span class="line"><span class="comment">// Turn on:</span></span><br><span class="line"><span class="comment">// - auto null reference initialization</span></span><br><span class="line"><span class="comment">// - auto collection growing</span></span><br><span class="line">SpelParserConfiguration config = <span class="keyword">new</span> SpelParserConfiguration(<span class="keyword">true</span>,<span class="keyword">true</span>);</span><br><span class="line">ExpressionParser parser = <span class="keyword">new</span> SpelExpressionParser(config);</span><br><span class="line">String expressionStr = <span class="string">"#foo.name == 'test'"</span>;</span><br><span class="line">StandardEvaluationContext context = <span class="keyword">new</span> StandardEvaluationContext();</span><br><span class="line">context.setVariable(<span class="string">"foo"</span>,foo);</span><br><span class="line">Expression expression = parser.parseExpression(expressionStr);</span><br><span class="line">Boolean result = expression.getValue(context,Boolean.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">//编译模式</span></span><br><span class="line">config = <span class="keyword">new</span> SpelParserConfiguration(SpelCompilerMode.IMMEDIATE, RunSpel.class.getClassLoader());</span><br><span class="line">parser = <span class="keyword">new</span> SpelExpressionParser(config);</span><br><span class="line">context = <span class="keyword">new</span> StandardEvaluationContext();</span><br><span class="line">context.setVariable(<span class="string">"foo"</span>,foo);</span><br><span class="line">expression = parser.parseExpression(expressionStr);</span><br><span class="line">result = expression.getValue(context,Boolean.class);</span><br></pre></td></tr></table></figure>
+<h3 id="Groovy"><a href="#Groovy" class="headerlink" title="Groovy"></a><a href="http://www.groovy-lang.org/" target="_blank" rel="external">Groovy</a></h3><p>Groovy除了<a href="http://gradle.org/" target="_blank" rel="external">Gradle</a> 上的广泛应用之外，另一个大范围的使用应该就是结合Java使用动态代码了。Groovy的语法与Java非常相似，以至于多数的Java代码也是正确的Groovy代码。Groovy代码动态的被<a href="https://zh.wikipedia.org/wiki/%E7%BC%96%E8%AF%91%E5%99%A8" target="_blank" rel="external">编译器</a>转换成Java字节码。由于其运行在JVM上的特性，Groovy可以使用其他Java语言编写的库。</p>
+<p>Groovy可以看作给Java静态世界补充动态能力的语言，同时Groovy已经实现了java不具备的语言特性：</p>
+<ul>
+<li>函数字面值；</li>
+<li>对集合的一等支持；</li>
+<li>对正则表达式的一等支持；</li>
+<li>对xml的一等支持；</li>
+</ul>
+<p>Groovy作为基于JVM的语言，与表达式语言存在语言级的不同，因此在语法上比表达还是语言更灵活。Java在调用Groovy时，都需要将Groovy代码编译成Class文件。</p>
+<p>Groovy 可以采用GroovyClassLoader、GroovyShell、GroovyScriptEngine和<a href="http://docs.oracle.com/javase/6/docs/technotes/guides/scripting/" target="_blank" rel="external">JSR223</a> 等方式与Java语言集成。</p>
+<h4 id="GroovyClassLoader"><a href="#GroovyClassLoader" class="headerlink" title="GroovyClassLoader"></a>GroovyClassLoader</h4><p> GroovyClassLoader是一个定制的类装载器，负责解释加载Java类中用到的Groovy类，也可以编译，Java代码可通过其动态加载Groovy脚本并执行。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FooCompare</span>&#123;</span></span><br><span class="line">    <span class="keyword">boolean</span> compare(String toCompare)&#123;</span><br><span class="line">        Foo foo = <span class="keyword">new</span> Foo();</span><br><span class="line">        foo.name = <span class="string">"test"</span>;</span><br><span class="line">        <span class="keyword">return</span> foo.name == toCompare;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">GroovyClassLoader loader = <span class="keyword">new</span> GroovyClassLoader();</span><br><span class="line">Class groovyClass = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	String path = <span class="string">"FooCompare.groovy"</span>;</span><br><span class="line">    groovyClass = loader.parseClass(<span class="keyword">new</span> File(path));</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br><span class="line">GroovyObject groovyObject = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    groovyObject = (GroovyObject) groovyClass.newInstance();</span><br><span class="line">&#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br><span class="line">result = groovyObject.invokeMethod(<span class="string">"compare"</span>, <span class="string">"test"</span>);</span><br><span class="line"><span class="keyword">assert</span> result.equals(Boolean.TRUE);</span><br><span class="line">System.out.print(result);</span><br></pre></td></tr></table></figure>
+<h4 id="GroovyShell"><a href="#GroovyShell" class="headerlink" title="GroovyShell"></a>GroovyShell</h4><p>GroovyShell允许在Java类中（甚至Groovy类）求任意Groovy表达式的值。可以使用Binding对象输入参数给表达式，并最终通过GroovyShell返回Groovy表达式的计算结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Foo foo = <span class="keyword">new</span> Foo();</span><br><span class="line">foo.setName(<span class="string">"test"</span>);</span><br><span class="line">Binding binding = <span class="keyword">new</span> Binding();</span><br><span class="line">binding.setVariable(<span class="string">"foo"</span>,foo);</span><br><span class="line">GroovyShell shell = <span class="keyword">new</span> GroovyShell(binding);</span><br><span class="line">String expression = <span class="string">"foo.name=='test'"</span>;</span><br><span class="line">Object result = shell.evaluate(expression);</span><br><span class="line"><span class="keyword">assert</span> result.equals(Boolean.TRUE);</span><br></pre></td></tr></table></figure>
+<h4 id="GroovyScriptEngine"><a href="#GroovyScriptEngine" class="headerlink" title="GroovyScriptEngine"></a>GroovyScriptEngine</h4><p>GroovyShell多用于推求对立的脚本或表达式，如果换成相互关联的多个脚本，使用GroovyScriptEngine会更好些。GroovyScriptEngine从您指定的位置（文件系统，URL，数据库，等等）加载Groovy脚本，并且随着脚本变化而重新加载它们。如同GroovyShell一样，GroovyScriptEngine也允许您传入参数值，并能返回脚本的值。</p>
+<p>FooScript.groovy</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> blog.brucefeng.info.groovy</span><br><span class="line"></span><br><span class="line">foo.name==<span class="string">"test"</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Foo foo = <span class="keyword">new</span> Foo();</span><br><span class="line">foo.setName(<span class="string">"test"</span>);</span><br><span class="line">Binding binding = <span class="keyword">new</span> Binding();</span><br><span class="line">binding.setVariable(<span class="string">"foo"</span>,foo);</span><br><span class="line">String[] paths = &#123;<span class="string">"/demopath/"</span>&#125;</span><br><span class="line">GroovyScriptEngine gse = <span class="keyword">new</span> GroovyScriptEngine(paths);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    result = gse.run(<span class="string">"FooScript.groovy"</span>, binding);</span><br><span class="line">&#125; <span class="keyword">catch</span> (ResourceException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125; <span class="keyword">catch</span> (ScriptException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">assert</span> result.equals(Boolean.TRUE);</span><br></pre></td></tr></table></figure>
+<h4 id="JSR223"><a href="#JSR223" class="headerlink" title="JSR223"></a>JSR223</h4><p>JSR223 是Java 6提供的一种从Java内部执行脚本编写语言的方便、标准的方式，并提供从脚本内部访问Java 资源和类的功能，可以使用其运行多种脚本语言如JavaScript和Groovy等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Foo foo = <span class="keyword">new</span> Foo();</span><br><span class="line">foo.setName(<span class="string">"test"</span>);</span><br><span class="line">ScriptEngineManager factory = <span class="keyword">new</span> ScriptEngineManager();</span><br><span class="line">ScriptEngine engine1 = factory.getEngineByName(<span class="string">"groovy"</span>);</span><br><span class="line">engine1.put(<span class="string">"foo"</span>,foo);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">   result =  engine1.eval(expression);</span><br><span class="line">&#125; <span class="keyword">catch</span> (javax.script.ScriptException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">assert</span> result.equals(Boolean.TRUE);</span><br></pre></td></tr></table></figure>
+<h4 id="使用中经常出现的问题"><a href="#使用中经常出现的问题" class="headerlink" title="使用中经常出现的问题"></a>使用中经常出现的问题</h4><p>因此Java每次调用Groovy代码都会将Groovy编译成Class文件，因此在调用过程中会出现JVM级别的问题。如使用GroovyShell的parse方法导致perm区爆满的问题，使用GroovyClassLoader加载机制导致频繁gc问题和CodeCache用满，导致JIT禁用问题等，相关问题可以参考<a href="https://yq.aliyun.com/articles/2357" target="_blank" rel="external">Groovy与Java集成常见的坑</a> 。 </p>
+<h3 id="性能对比"><a href="#性能对比" class="headerlink" title="性能对比"></a>性能对比</h3><hr>
+<p>在这里简单对上面介绍到的OGNL、MVEL、SpEL和Groovy2.4 的性能进行大致的性能测试（简单测试）：</p>
+<table>
+<thead>
+<tr>
+<th>实现方式</th>
+<th>耗时（ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Java</td>
+<td>13</td>
+</tr>
+<tr>
+<td>OGNL</td>
+<td>2958</td>
+</tr>
+<tr>
+<td>MVEL</td>
+<td>225</td>
+</tr>
+<tr>
+<td>SpEL</td>
+<td>1023</td>
+</tr>
+<tr>
+<td>Groovy</td>
+<td>99</td>
+</tr>
+</tbody>
+</table>
+<p>通过这个简单测试发现，Groovy 2.4的性能已经足够的好，而MVEL的性能依然保持强劲，不过已经远远落后与Groovy，在对性能有一定要求的场景下已经不建议使用OGNL和SpEL。<br><strong>不过动态代码的执行效率还是远低于Java，因此在高性能的场景下慎用。</strong></p>
+<p>以下是测试代码：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> blog.brucefeng.info.performance</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GroovyCal</span>&#123;</span></span><br><span class="line">    Integer cal(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)&#123;</span><br><span class="line">        <span class="keyword">return</span> x + y*<span class="number">2</span> - z;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> blog.brucefeng.info.performance;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunPerform</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> xmax = <span class="number">100</span>,ymax = <span class="number">100</span>,zmax= <span class="number">10</span>;</span><br><span class="line">            runJava(xmax, ymax, zmax);</span><br><span class="line">            runOgnl(xmax, ymax, zmax);</span><br><span class="line">            runMvel(xmax, ymax, zmax);</span><br><span class="line">            runSpel(xmax, ymax, zmax);</span><br><span class="line">            runGroovyClass(xmax, ymax, zmax);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">runJava</span><span class="params">(<span class="keyword">int</span> xmax, <span class="keyword">int</span> ymax, <span class="keyword">int</span> zmax)</span> </span>&#123;</span><br><span class="line">        Date start = <span class="keyword">new</span> Date();</span><br><span class="line">        Integer result = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> xval = <span class="number">0</span>; xval &lt; xmax; xval++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> yval = <span class="number">0</span>; yval &lt; ymax; yval++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> zval = <span class="number">0</span>; zval &lt;= zmax; zval++) &#123;</span><br><span class="line">                    result += xval + yval * <span class="number">2</span> - zval;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Date end = <span class="keyword">new</span> Date();</span><br><span class="line">        System.out.println(<span class="string">"time is : "</span> + (end.getTime() - start.getTime()) + <span class="string">",result is "</span> + result);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">runOgnl</span><span class="params">(<span class="keyword">int</span> xmax, <span class="keyword">int</span> ymax, <span class="keyword">int</span> zmax)</span> <span class="keyword">throws</span> OgnlException </span>&#123;</span><br><span class="line">        String expression = <span class="string">"x + y*2 - z"</span>;</span><br><span class="line">        Map&lt;String, Object&gt; context = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">        Integer result = <span class="number">0</span>;</span><br><span class="line">        Date start = <span class="keyword">new</span> Date();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> xval = <span class="number">0</span>; xval &lt; xmax; xval++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> yval = <span class="number">0</span>; yval &lt; ymax; yval++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> zval = <span class="number">0</span>; zval &lt;= zmax; zval++) &#123;</span><br><span class="line">                    context.put(<span class="string">"x"</span>, xval);</span><br><span class="line">                    context.put(<span class="string">"y"</span>, yval);</span><br><span class="line">                    context.put(<span class="string">"z"</span>, zval);</span><br><span class="line">                    Integer cal = (Integer) Ognl.getValue(expression, context);</span><br><span class="line">                    result += cal;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Date end = <span class="keyword">new</span> Date();</span><br><span class="line">        System.out.println(<span class="string">"Ognl:time is : "</span> + (end.getTime() - start.getTime()) + <span class="string">",result is "</span> + result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">runMvel</span><span class="params">(<span class="keyword">int</span> xmax, <span class="keyword">int</span> ymax, <span class="keyword">int</span> zmax)</span> </span>&#123;</span><br><span class="line">        Map context = <span class="keyword">new</span> HashMap();</span><br><span class="line">        String expression = <span class="string">"x + y*2 - z"</span>;</span><br><span class="line">        Serializable compileExpression = MVEL.compileExpression(expression);</span><br><span class="line">        Integer result = <span class="number">0</span>;</span><br><span class="line">        Date start = <span class="keyword">new</span> Date();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> xval = <span class="number">0</span>; xval &lt; xmax; xval++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> yval = <span class="number">0</span>; yval &lt; ymax; yval++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> zval = <span class="number">0</span>; zval &lt;= zmax; zval++) &#123;</span><br><span class="line">                    context.put(<span class="string">"x"</span>, xval);</span><br><span class="line">                    context.put(<span class="string">"y"</span>, yval);</span><br><span class="line">                    context.put(<span class="string">"z"</span>, zval);</span><br><span class="line">                    VariableResolverFactory functionFactory = <span class="keyword">new</span> MapVariableResolverFactory(context);</span><br><span class="line">                    Integer cal = (Integer) MVEL.executeExpression(compileExpression, context, functionFactory);</span><br><span class="line">                    result += cal;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Date end = <span class="keyword">new</span> Date();</span><br><span class="line">        System.out.println(<span class="string">"MVEL:time is : "</span> + (end.getTime() - start.getTime()) + <span class="string">",result is "</span> + result);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">runSpel</span><span class="params">(<span class="keyword">int</span> xmax, <span class="keyword">int</span> ymax, <span class="keyword">int</span> zmax)</span> </span>&#123;</span><br><span class="line">        SpelParserConfiguration config;</span><br><span class="line">        ExpressionParser parser;</span><br><span class="line">        config = <span class="keyword">new</span> SpelParserConfiguration(SpelCompilerMode.IMMEDIATE, RunSpel.class.getClassLoader());</span><br><span class="line">        parser = <span class="keyword">new</span> SpelExpressionParser(config);</span><br><span class="line">        StandardEvaluationContext context = <span class="keyword">new</span> StandardEvaluationContext();</span><br><span class="line">        Integer result = <span class="number">0</span>;</span><br><span class="line">        String expressionStr = <span class="string">"#x + #y*2 - #z"</span>;</span><br><span class="line">        Date start = <span class="keyword">new</span> Date();</span><br><span class="line">        <span class="keyword">for</span> (Integer xval = <span class="number">0</span>; xval &lt; xmax; xval++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Integer yval = <span class="number">0</span>; yval &lt; ymax; yval++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (Integer zval = <span class="number">0</span>; zval &lt;= zmax; zval++) &#123;</span><br><span class="line">                    context.setVariable(<span class="string">"x"</span>, xval);</span><br><span class="line">                    context.setVariable(<span class="string">"y"</span>, yval);</span><br><span class="line">                    context.setVariable(<span class="string">"z"</span>, zval);</span><br><span class="line">                    Expression expression = parser.parseExpression(expressionStr);</span><br><span class="line">                    Integer cal = expression.getValue(context, Integer.class);</span><br><span class="line">                    result += cal;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Date end = <span class="keyword">new</span> Date();</span><br><span class="line">        System.out.println(<span class="string">"SpEL:time is : "</span> + (end.getTime() - start.getTime()) + <span class="string">",result is "</span> + result);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">runGroovyClass</span><span class="params">(<span class="keyword">int</span> xmax, <span class="keyword">int</span> ymax, <span class="keyword">int</span> zmax)</span> </span>&#123;</span><br><span class="line">        GroovyClassLoader loader = <span class="keyword">new</span> GroovyClassLoader();</span><br><span class="line">        Class groovyClass = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            groovyClass = loader.parseClass(<span class="keyword">new</span> File(</span><br><span class="line">                    <span class="string">"GroovyCal.groovy"</span>));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        GroovyObject groovyObject = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            groovyObject = (GroovyObject) groovyClass.newInstance();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        Integer result = <span class="number">0</span>;</span><br><span class="line">        Date start = <span class="keyword">new</span> Date();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> xval = <span class="number">0</span>; xval &lt; xmax; xval++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> yval = <span class="number">0</span>; yval &lt; ymax; yval++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> zval = <span class="number">0</span>; zval &lt;= zmax; zval++) &#123;</span><br><span class="line">                    Object[] args = &#123;xval,yval,zval&#125;;</span><br><span class="line">                    Integer cal = (Integer) groovyObject.invokeMethod(<span class="string">"cal"</span>, args);</span><br><span class="line">                    result += cal;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Date end = <span class="keyword">new</span> Date();</span><br><span class="line">        System.out.println(<span class="string">"Groovy Class:time is : "</span> + (end.getTime() - start.getTime()) + <span class="string">",result is "</span> + result);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>本文的代码可以参见<a href="https://github.com/brucefengnju/eldemo" target="_blank" rel="external">eldemo github</a> 。</p>
+<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><blockquote>
+<p><a href="https://news.ycombinator.com/item?id=4558272" target="_blank" rel="external">Groovy vs Java Performance</a> </p>
+<p><a href="https://yq.aliyun.com/articles/2357" target="_blank" rel="external">Groovy与Java集成常见的坑</a> </p>
+<p><a href="https://commons.apache.org/proper/commons-ognl/language-guide.html" target="_blank" rel="external">OGNL language guide</a> </p>
+<p><a href="http://xiongzheng.me/question/2015/01/02/groovy-permgen-out/?spm=5176.100239.blogcont.8.sMPc7M" target="_blank" rel="external">Groovy引发的PermGen区爆满问题定位与解决</a></p>
+<p><a href="http://www.bubuko.com/infodetail-670047.html?spm=5176.100239.blogcont.9.sMPc7M" target="_blank" rel="external">groovy脚本导致的FullGC问题</a></p>
+<p><a href="http://ju.outofmemory.cn/entry/129930?spm=5176.100239.blogcont.10.sMPc7M" target="_blank" rel="external">Groovy性能问题</a></p>
+<p><a href="http://www.zgxue.com/120/1204001.html?spm=5176.100239.blogcont.11.sMPc7M" target="_blank" rel="external">Groovy的classloader加载机制唤起的频繁GC</a></p>
+<p><a href="http://johnnyjian.iteye.com/blog/1847151?spm=5176.100239.blogcont.12.sMPc7M" target="_blank" rel="external">Groovy深入探索——Groovy的ClassLoader体系</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/post/dynamic-code-in-java/" data-id="cipak1vpk0009y95nz0vwl0rh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/">动态代码 Groovy OGNL SpEL MVEL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/post/bigproj-in-scrum/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Scrum中大项目管理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/post/system-reconstruct-summary/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">业务系统重构总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/SQL/">SQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/clojure/">clojure</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/programing/">programing</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/summarize/">summarize</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术总结/">技术总结</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure/">Clojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure-ruleengine/">Clojure ruleengine</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idempotent/">Idempotent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-JVM/">Java JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-Index-SQL/">MySQL Index SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-MySQL/">SQL MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Java/">Spring Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Undertow/">Undertow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clojure-Compojure/">clojure Compojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/front-end-cross-domian/">front-end, cross-domian</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice/">microservice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice-design-patterns/">microservice design-patterns</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rime-输入法/">rime,输入法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc-pigeon/">rpc pigeon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrum-敏捷-大项目管理/">scrum 敏捷 大项目管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/">动态代码 Groovy OGNL SpEL MVEL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动静分离/">动静分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实时通信-comet-websocket/">实时通信 comet websocket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技术总结/">技术总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新年计划/">新年计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/管理/">管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统重构-设计模式/">系统重构 设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Clojure/" style="font-size: 20px;">Clojure</a> <a href="/tags/Clojure-ruleengine/" style="font-size: 10px;">Clojure ruleengine</a> <a href="/tags/Idempotent/" style="font-size: 10px;">Idempotent</a> <a href="/tags/Java-JVM/" style="font-size: 10px;">Java JVM</a> <a href="/tags/MySQL-Index-SQL/" style="font-size: 10px;">MySQL Index SQL</a> <a href="/tags/SQL-MySQL/" style="font-size: 10px;">SQL MySQL</a> <a href="/tags/Spring-Java/" style="font-size: 16.67px;">Spring Java</a> <a href="/tags/Undertow/" style="font-size: 13.33px;">Undertow</a> <a href="/tags/clojure-Compojure/" style="font-size: 10px;">clojure Compojure</a> <a href="/tags/front-end-cross-domian/" style="font-size: 10px;">front-end, cross-domian</a> <a href="/tags/memcached/" style="font-size: 10px;">memcached</a> <a href="/tags/microservice/" style="font-size: 10px;">microservice</a> <a href="/tags/microservice-design-patterns/" style="font-size: 10px;">microservice design-patterns</a> <a href="/tags/rime-输入法/" style="font-size: 10px;">rime,输入法</a> <a href="/tags/rpc-pigeon/" style="font-size: 10px;">rpc pigeon</a> <a href="/tags/scrum-敏捷-大项目管理/" style="font-size: 10px;">scrum 敏捷 大项目管理</a> <a href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/" style="font-size: 10px;">动态代码 Groovy OGNL SpEL MVEL</a> <a href="/tags/动静分离/" style="font-size: 10px;">动静分离</a> <a href="/tags/实时通信-comet-websocket/" style="font-size: 10px;">实时通信 comet websocket</a> <a href="/tags/技术总结/" style="font-size: 16.67px;">技术总结</a> <a href="/tags/新年计划/" style="font-size: 13.33px;">新年计划</a> <a href="/tags/管理/" style="font-size: 13.33px;">管理</a> <a href="/tags/系统重构-设计模式/" style="font-size: 10px;">系统重构 设计模式</a> <a href="/tags/转载/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/post/bigproj-in-scrum/">Scrum中大项目管理</a>
+          </li>
+        
+          <li>
+            <a href="/post/dynamic-code-in-java/">Java中使用动态代码</a>
+          </li>
+        
+          <li>
+            <a href="/post/system-reconstruct-summary/">业务系统重构总结</a>
+          </li>
+        
+          <li>
+            <a href="/post/service-design-patterns-practices/">服务化设计模式实践</a>
+          </li>
+        
+          <li>
+            <a href="/post/brower-server-msg/">浏览器与服务器的消息通信</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 陈景广<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

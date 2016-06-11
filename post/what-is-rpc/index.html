@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>RPC是什么 | 青蜂侠</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1. RPCRPC (Remote Procedure Call)是一个计算机通信协议，该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。RPC是一个分布式计算的CS模式，总是由Client向Server发出一个执行若干过程请求，Server接受请求，使用客户端提供的参数，计算完成之后将结果返回给客户端。RPC的协议有很多，比如最早的CORBA，Jav">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RPC是什么">
+<meta property="og:url" content="http://yoursite.com/post/what-is-rpc/index.html">
+<meta property="og:site_name" content="青蜂侠">
+<meta property="og:description" content="1. RPCRPC (Remote Procedure Call)是一个计算机通信协议，该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。RPC是一个分布式计算的CS模式，总是由Client向Server发出一个执行若干过程请求，Server接受请求，使用客户端提供的参数，计算完成之后将结果返回给客户端。RPC的协议有很多，比如最早的CORBA，Jav">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/RPC原理.png">
+<meta property="og:image" content="http://7xkbey.com1.z0.glb.clouddn.com/zookeerp数据模型.gif">
+<meta property="og:updated_time" content="2015-12-13T06:37:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RPC是什么">
+<meta name="twitter:description" content="1. RPCRPC (Remote Procedure Call)是一个计算机通信协议，该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。RPC是一个分布式计算的CS模式，总是由Client向Server发出一个执行若干过程请求，Server接受请求，使用客户端提供的参数，计算完成之后将结果返回给客户端。RPC的协议有很多，比如最早的CORBA，Jav">
+<meta name="twitter:image" content="http://7xkbey.com1.z0.glb.clouddn.com/RPC原理.png">
+  
+    <link rel="alternate" href="/atom.xml" title="青蜂侠" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">青蜂侠</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-RPC是什么" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/post/what-is-rpc/" class="article-date">
+  <time datetime="2015-12-03T10:12:00.000Z" itemprop="datePublished">2015-12-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      RPC是什么
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-RPC"><a href="#1-RPC" class="headerlink" title="1. RPC"></a>1. <a href="https://zh.wikipedia.org/wiki/%E9%81%A0%E7%A8%8B%E9%81%8E%E7%A8%8B%E8%AA%BF%E7%94%A8" target="_blank" rel="external">RPC</a></h3><p>RPC (Remote Procedure Call)是一个计算机通信协议，该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程。RPC是一个分布式计算的CS模式，总是由Client向Server发出一个执行若干过程请求，Server接受请求，使用客户端提供的参数，计算完成之后将结果返回给客户端。RPC的协议有很多，比如最早的CORBA，Java RMI，Web Service的RPC风格，Hessian，Thrift，甚至Rest API。</p>
+<h4 id="1-1-RPC的调用流程"><a href="#1-1-RPC的调用流程" class="headerlink" title="1.1 RPC的调用流程"></a>1.1 RPC的调用流程</h4><p><img src="http://7xkbey.com1.z0.glb.clouddn.com/RPC原理.png" alt="">图片来自<a href="http://blog.jobbole.com/92290/" target="_blank" rel="external">你应该知道的RPC原理</a></p>
+<ul>
+<li>服务消费方（client）调用以本地调用方式调用服务； </li>
+<li>client stub接收到调用后负责将方法、参数等组装成能够进行网络传输的消息体； </li>
+<li>client stub找到服务地址，并将消息发送到服务端； </li>
+<li>server stub收到消息后进行解码； </li>
+<li>server stub根据解码结果调用本地的服务； </li>
+<li>本地服务执行并将结果返回给server stub； </li>
+<li>server stub将返回结果打包成消息并发送至消费方； </li>
+<li>client stub接收到消息，并进行解码； </li>
+<li>服务消费方得到最终结果。 </li>
+</ul>
+<p>RPC的目标就是要2~8这些步骤都封装起来，让用户对这些细节透明。 </p>
+<h4 id="1-2-RPC需要解决的问题"><a href="#1-2-RPC需要解决的问题" class="headerlink" title="1.2 RPC需要解决的问题"></a>1.2 RPC需要解决的问题</h4><ul>
+<li>通讯的问题</li>
+<li>服务寻址的问题</li>
+<li>参数的序列化和反序列化</li>
+<li>负载均衡的问题</li>
+</ul>
+<h3 id="2-服务通信协议"><a href="#2-服务通信协议" class="headerlink" title="2. 服务通信协议"></a>2. 服务通信协议</h3><p>服务通信主要是Client和Server之间建立网络连接，所有交换的数据都在这个连接里传输，连接可以是按需连接，调用结束后就断掉，也可以是长连接，多个远程过程调用共享同一个连接。不同的RPC框架可能使用不同的网络协议，常用的有直接使用TCP，基于HTTP/HTTP2.0 等，目前pigeon使用的有TCP和HTTP协议。在java领域一些工具和框架已经封装对底层协议的使用进行了封装例如比较著名的<a href="http://netty.io/" target="_blank" rel="external">Netty</a>(这也是pigeon在使用的通信框架），<a href="https://mina.apache.org/" target="_blank" rel="external">Apache MINA</a></p>
+<h3 id="3-服务寻址"><a href="#3-服务寻址" class="headerlink" title="3. 服务寻址"></a>3. 服务寻址</h3><p>每次Client向Server端发起请求之前，需要知道该向哪个Server发请求，也就涉及到服务寻址的问题。最简单的方式是直接指定Server的ip,访问特定机器上的服务。</p>
+<p>但是在分布式环境中，通过在代码中指定ip的方式是不合适的，所以现在的RPC框架基本都是使用配置的方式来实现服务的寻址。配置方式下涉及Server端服务的注册和Client端的服务寻址，这里就成为了Zookeeper应用的绝佳场景。</p>
+<h4 id="3-1-ZooKeeper-管理分布式服务配置"><a href="#3-1-ZooKeeper-管理分布式服务配置" class="headerlink" title="3.1 ZooKeeper 管理分布式服务配置"></a>3.1 ZooKeeper 管理分布式服务配置</h4><p>ZooKeeper 分布式服务框架是 Apache Hadoop 的一个子项目，它主要是用来解决分布式应用中经常遇到的一些数据管理问题，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。ZooKeeper的架构通过冗余服务实现高可用性。因此，如果第一次无应答，客户端就可以询问另一台ZooKeeper主机。ZooKeeper节点将它们的数据存储于一个分层的命名空间，非常类似于一个文件系统或一个前缀树结构。客户端可以在节点读写，从而以这种方式拥有一个共享的配置服务。<br><img src="http://7xkbey.com1.z0.glb.clouddn.com/zookeerp数据模型.gif" alt=""><br>图片来自<a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-zookeeper/" target="_blank" rel="external">分布式服务框架 Zookeeper – 管理分布式环境中的数据</a></p>
+<p>3.1.1 <strong>服务注册</strong><br>    当每次Server启动时，想调用ZooKeeper的Client，将自身提供的服务注册到ZooKeeper中，形如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://service.test.com/demoservice/demo_1.0.0:127.0.0.1</span><br></pre></td></tr></table></figure>
+<p>当Server Shut down 时也会将自身节点在ZooKeeper配置中进行摘除。</p>
+<p>3.1.2 <strong>服务寻址</strong></p>
+<p>Client每次请求Server之前，需要向ZooKeeper中查询该服务对应的地址，例如需要使用demoservice，查询key为<a href="http://service.test.com/demoservice/demo_1.0.0的对应ip，即可访问对应服务。" target="_blank" rel="external">http://service.test.com/demoservice/demo_1.0.0的对应ip，即可访问对应服务。</a></p>
+<p>3.1.3 <strong>服务修改广播</strong></p>
+<p>当一个服务发生修改时，如服务的启动与关闭，都会将消息发送到感兴趣的Client。</p>
+<p>ZooKeeper的原理及使用参见 <a href="https://zookeeper.apache.org/" target="_blank" rel="external">ZooKeeper项目</a></p>
+<h3 id="4-序列化及反序列化"><a href="#4-序列化及反序列化" class="headerlink" title="4. 序列化及反序列化"></a>4. 序列化及反序列化</h3><p>Client找到对应Server之后就需要传递参数到Server端，Server在处理完数据之后也需要将结果返回给Client。</p>
+<p>每种序列化协议都有不同的优点和确定，一个成熟的序列化协议需要通盘考虑通用性，强健性，可调试性/可读性，性能，可扩展性以及安全性等方面。目前常见的序列化协议主要有<a href="http://hessian.caucho.com/" target="_blank" rel="external">hessian</a>，XML、JSON、<a href="https://github.com/google/protobuf" target="_blank" rel="external">Protobuf</a>、<a href="https://thrift.apache.org/" target="_blank" rel="external">Thrift</a>和<a href="https://avro.apache.org/" target="_blank" rel="external">Avro</a>。</p>
+<p>例如，<a href="https://github.com/wu-xiang/pigeon" target="_blank" rel="external">pigeon</a>支持多种序列化方式，序列化方式只需要在客户端调用时通过serialize属性指定，一般情况推荐兼容性最好的hessian。<br>如果需要自行设计序列化方式，可以继承com.dianping.pigeon.remoting.common.codec.DefaultAbstractSerializer类来定义自己的序列化类，并通过SerializerFactory.registerSerializer(byte serializerType, Serializer serializer)接口将自定义的序列化类注册进来。</p>
+<h3 id="5-负载均衡"><a href="#5-负载均衡" class="headerlink" title="5. 负载均衡"></a>5. 负载均衡</h3><p>负载平衡（Load balancing）是一种计算机网络技术，用来在多个计算机（计算机集群）、网络连接、CPU、磁盘驱动器或其他资源中分配负载，以达到最佳化资源使用、最大化吞吐率、最小化响应时间、同时避免过载的目的。负载均衡器有各种各样的工作排程算法（用于决定将前端用户请求发送到哪一个后台服务器），最简单的是随机选择和轮询。更为高级的负载均衡器会考虑其它更多的相关因素，如后台服务器的负载，响应时间，运行状态，活动连接数，地理位置，处理能力，或最近分配的流量。</p>
+<p>例如，<a href="https://github.com/wu-xiang/pigeon" target="_blank" rel="external">pigeon</a>支持random、<a href="https://zh.wikipedia.org/wiki/%E5%BE%AA%E7%92%B0%E5%88%B6" target="_blank" rel="external">roundRobin</a>、weightedAutoware这几种类型，默认weighted Autoware策略。在pigeon框架中在每一次发送请求时都会有在线程中计算请求的返回时间，weighted Autoware策略是根据各个线程统计的响应时间来判断该服务的负载情况，响应时间越长说明该机器的负载越重。</p>
+<h3 id="6-容灾"><a href="#6-容灾" class="headerlink" title="6. 容灾"></a>6. 容灾</h3><p>这里我们主要以<a href="https://github.com/wu-xiang/pigeon" target="_blank" rel="external">pigeon</a>为例介绍其实现容灾的方式，以供参考。</p>
+<h4 id="6-1-健康检测"><a href="#6-1-健康检测" class="headerlink" title="6.1 健康检测"></a>6.1 健康检测</h4><p>在pigeon中，当使用tcp协议连接是，Client会定期发送心跳消息和接收心跳消息，如果心跳未正常返回，则在Client端会摘除这个Server节点，在后续服务寻址时不再选择该Server节点。</p>
+<h4 id="6-2-超时及重试"><a href="#6-2-超时及重试" class="headerlink" title="6.2 超时及重试"></a>6.2 超时及重试</h4><p>Client端可以配置一个服务的超时时间，当发送请求是，pigeon线程会计算该请求所耗费的时间，如果超过限制时间尚未返回，则根据配置返回超时或者进行重试，避免客户端过长时间的等待。</p>
+<h4 id="6-3-客户端配置集群策略模式"><a href="#6-3-客户端配置集群策略模式" class="headerlink" title="6.3 客户端配置集群策略模式"></a>6.3 客户端配置集群策略模式</h4><p>pigeon 的客户端集群策略有failfast、failover、failsafe和forking 四种方式。 </p>
+<ul>
+<li>failfast-调用服务的一个节点失败后抛出异常返回</li>
+<li>failover-调用服务的一个节点失败后会尝试调用另外的一个节点</li>
+<li>failsafe-调用服务的一个节点失败后不会抛出异常，返回null，后续版本会考虑按配置默认值返回</li>
+<li>forking-同时调用服务的所有可用节点，返回调用最快的节点结果数据</li>
+</ul>
+<h4 id="6-4-服务隔离与限流"><a href="#6-4-服务隔离与限流" class="headerlink" title="6.4 服务隔离与限流"></a>6.4 服务隔离与限流</h4><ul>
+<li>配置服务方法级别的最大并发数</li>
+<li>限制某个客户端应用的最大并发数<br>详情参见<a href="http://code.dianpingoa.com/arch/pigeon2/blob/master/pigeon-governor/pigeon-governor-server/src/main/webapp/resources/mdwiki/USER_GUIDE.md" target="_blank" rel="external">Pigeon开发指南</a>。</li>
+</ul>
+<h3 id="7-目前常见的RPC框架"><a href="#7-目前常见的RPC框架" class="headerlink" title="7. 目前常见的RPC框架"></a>7. 目前常见的RPC框架</h3><ul>
+<li><a href="http://hessian.caucho.com/" target="_blank" rel="external">Hessian</a></li>
+</ul>
+<p>除了hessian协议之外，还提供了通过servlet方式实现的RPC框架</p>
+<ul>
+<li><a href="https://thrift.apache.org/" target="_blank" rel="external">Thrift</a></li>
+</ul>
+<p>Thrift是一个跨语言的服务部署框架，最初由Facebook于2007年开发，2008年进入Apache开源项目。Thrift通过一个中间语言(IDL, 接口定义语言)来定义RPC的接口和数据类型，然后通过一个编译器生成不同语言的代码（目前支持C++,Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, Smalltalk和OCaml）,并由生成的代码负责RPC协议层和传输层的实现。</p>
+<ul>
+<li><a href="https://twitter.github.io/finagle/" target="_blank" rel="external">Finagle</a></li>
+</ul>
+<p>Finagle是Twitter基于Netty开发的支持容错的、协议无关的RPC框架，该框架支撑了Twitter的核心服务。</p>
+<ul>
+<li><a href="https://github.com/alibaba/dubbo" target="_blank" rel="external">Dubbo</a><br>Dubbo 是阿里巴巴公司开源的一个高性能优秀的服务框架，使得应用可通过高性能的 RPC 实现服务的输出和输入功能，可以和 Spring框架无缝集成。</li>
+</ul>
+<ul>
+<li><a href="http://www.grpc.io/" target="_blank" rel="external">gRPC</a></li>
+</ul>
+<p>gRPC是一个高性能、通用的开源RPC框架，其由Google主要面向移动应用开发并基于HTTP/2协议标准而设计，基于ProtoBuf(Protocol Buffers)序列化协议开发，且支持众多开发语言。gRPC提供了一种简单的方法来精确地定义服务和为iOS、Android和后台支持服务自动生成可靠性很强的客户端功能库。客户端充分利用高级流和链接功能，从而有助于节省带宽、降低的TCP链接次数、节省CPU使用、和电池寿命。</p>
+<h3 id="8-RPC-与-微服务-MicroService"><a href="#8-RPC-与-微服务-MicroService" class="headerlink" title="8. RPC 与 微服务(MicroService)"></a>8. RPC 与 微服务(MicroService)</h3><p>微服务是一种架构思想，一个微服务一般只完成某个特定的功能，比如下单服务，订单查询服务，是将应用分解为小的，相互连接的服务。</p>
+<p>微服务在系统层面有多种多样的表现形式，例如暴露restful api，SOA服务或者http接口。RPC可以作为实现微服务系统的一种实现方式将各个应用都暴露出RPC的服务接口，从而实现微服务的架构。</p>
+<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><blockquote>
+<p><a href="https://github.com/wu-xiang/pigeon" target="_blank" rel="external">pigeon框架</a><br><a href="https://github.com/wu-xiang/pigeon/blob/master/USER_GUIDE.md" target="_blank" rel="external">pigeon user guide</a><br><a href="http://itindex.net/detail/52530-rpc-%E6%A1%86%E6%9E%B6-%E5%88%86%E6%9E%90" target="_blank" rel="external">RPC调用框架比较分析</a><br><a href="http://itindex.net/detail/53322-rpc-%E6%A1%86%E6%9E%B6-bangerlee" target="_blank" rel="external">RPC框架实现 - 容灾篇 - bangerlee</a><br>﻿<br><a href="http://itindex.net/detail/52896-rpc-%E5%8E%9F%E7%90%86" target="_blank" rel="external">RPC原理详解 - 永志</a><br><a href="http://itindex.net/detail/54558-rpc-%E5%8E%9F%E7%90%86" target="_blank" rel="external">你应该知道的RPC原理</a></p>
+<p><a href="http://www.infoq.com/cn/news/2014/05/twitter-finagle-intro" target="_blank" rel="external">Twitter的RPC框架Finagle简介</a><br><a href="http://www.infoq.com/cn/news/2015/03/grpc-google-http2-protobuf" target="_blank" rel="external">gRPC：Google开源的基于HTTP/2和ProtoBuf的通用RPC框架</a></p>
+<p><a href="https://zookeeper.apache.org/" target="_blank" rel="external"> Apache ZooKeeper</a><br><a href="https://zookeeper.apache.org/doc/trunk/" target="_blank" rel="external">Apache ZooKeeper doc</a></p>
+<p><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-zookeeper/" target="_blank" rel="external">分布式服务框架 Zookeeper – 管理分布式环境中的数据</a></p>
+<p><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/" target="_blank" rel="external">Google Protocol Buffer 的使用和原理</a><br><a href="https://developers.google.com/protocol-buffers/" target="_blank" rel="external">Protocol Buffers</a><br><a href="https://blog.twitter.com/2014/netty-at-twitter-with-finagle" target="_blank" rel="external">Netty at Twitter with Finagle</a><br><a href="http://www.infoq.com/cn/news/2014/05/twitter-finagle-intro" target="_blank" rel="external">Twitter的RPC框架Finagle简介</a></p>
+<p><a href="https://dzone.com/articles/goodbye-microservices-hello-right-sized-services?edition=99055" target="_blank" rel="external">Goodbye Microservices, Hello Right-sized Services</a><br><a href="http://www.infoq.com/cn/news/2013/12/micro-service-architecture" target="_blank" rel="external">微服务架构解析</a><br><a href="http://www.infoq.com/cn/news/2015/04/micro-service-architecture" target="_blank" rel="external">微服务架构的设计模式</a><br><a href="http://www.infoq.com/cn/articles/analysis-the-architecture-of-microservice-part-02" target="_blank" rel="external">解析微服务架构（二）微服务架构综述</a><br><a href="http://www.infoq.com/cn/articles/analysis-the-architecture-of-microservice-part-01" target="_blank" rel="external">解析微服务架构（一）单块架构系统以及其面临的挑战</a><br><a href="http://dockone.io/article/394" target="_blank" rel="external">微服务实战（一）：微服务架构的优势与不足</a><br><a href="http://www.infoq.com/cn/news/2015/04/single-app-micro-service" target="_blank" rel="external">单体应用与微服务优缺点辨析</a><br><a href="https://en.wikipedia.org/wiki/SOLID_(object-oriented_design" target="_blank" rel="external">SOLID</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/post/what-is-rpc/" data-id="cipak1vq5000jy95ncuuzbkoz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rpc-pigeon/">rpc pigeon</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/post/static-backend-asolate/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          网站开发动静分离实践
+        
+      </div>
+    </a>
+  
+  
+    <a href="/post/undefined/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">多台服务器查询日志</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/SQL/">SQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/clojure/">clojure</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/programing/">programing</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/summarize/">summarize</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术总结/">技术总结</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure/">Clojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure-ruleengine/">Clojure ruleengine</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idempotent/">Idempotent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-JVM/">Java JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-Index-SQL/">MySQL Index SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-MySQL/">SQL MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Java/">Spring Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Undertow/">Undertow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clojure-Compojure/">clojure Compojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/front-end-cross-domian/">front-end, cross-domian</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice/">microservice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice-design-patterns/">microservice design-patterns</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rime-输入法/">rime,输入法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc-pigeon/">rpc pigeon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrum-敏捷-大项目管理/">scrum 敏捷 大项目管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/">动态代码 Groovy OGNL SpEL MVEL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动静分离/">动静分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实时通信-comet-websocket/">实时通信 comet websocket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技术总结/">技术总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新年计划/">新年计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/管理/">管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统重构-设计模式/">系统重构 设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Clojure/" style="font-size: 20px;">Clojure</a> <a href="/tags/Clojure-ruleengine/" style="font-size: 10px;">Clojure ruleengine</a> <a href="/tags/Idempotent/" style="font-size: 10px;">Idempotent</a> <a href="/tags/Java-JVM/" style="font-size: 10px;">Java JVM</a> <a href="/tags/MySQL-Index-SQL/" style="font-size: 10px;">MySQL Index SQL</a> <a href="/tags/SQL-MySQL/" style="font-size: 10px;">SQL MySQL</a> <a href="/tags/Spring-Java/" style="font-size: 16.67px;">Spring Java</a> <a href="/tags/Undertow/" style="font-size: 13.33px;">Undertow</a> <a href="/tags/clojure-Compojure/" style="font-size: 10px;">clojure Compojure</a> <a href="/tags/front-end-cross-domian/" style="font-size: 10px;">front-end, cross-domian</a> <a href="/tags/memcached/" style="font-size: 10px;">memcached</a> <a href="/tags/microservice/" style="font-size: 10px;">microservice</a> <a href="/tags/microservice-design-patterns/" style="font-size: 10px;">microservice design-patterns</a> <a href="/tags/rime-输入法/" style="font-size: 10px;">rime,输入法</a> <a href="/tags/rpc-pigeon/" style="font-size: 10px;">rpc pigeon</a> <a href="/tags/scrum-敏捷-大项目管理/" style="font-size: 10px;">scrum 敏捷 大项目管理</a> <a href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/" style="font-size: 10px;">动态代码 Groovy OGNL SpEL MVEL</a> <a href="/tags/动静分离/" style="font-size: 10px;">动静分离</a> <a href="/tags/实时通信-comet-websocket/" style="font-size: 10px;">实时通信 comet websocket</a> <a href="/tags/技术总结/" style="font-size: 16.67px;">技术总结</a> <a href="/tags/新年计划/" style="font-size: 13.33px;">新年计划</a> <a href="/tags/管理/" style="font-size: 13.33px;">管理</a> <a href="/tags/系统重构-设计模式/" style="font-size: 10px;">系统重构 设计模式</a> <a href="/tags/转载/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/post/bigproj-in-scrum/">Scrum中大项目管理</a>
+          </li>
+        
+          <li>
+            <a href="/post/dynamic-code-in-java/">Java中使用动态代码</a>
+          </li>
+        
+          <li>
+            <a href="/post/system-reconstruct-summary/">业务系统重构总结</a>
+          </li>
+        
+          <li>
+            <a href="/post/service-design-patterns-practices/">服务化设计模式实践</a>
+          </li>
+        
+          <li>
+            <a href="/post/brower-server-msg/">浏览器与服务器的消息通信</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 陈景广<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

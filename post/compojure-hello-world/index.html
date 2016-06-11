@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Compojure hello world | 青蜂侠</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="断断续续学习了很久的Clojure，对语法也半生不熟的了，不过基本可以使用了，写点web的项目锻炼一下Clojure的熟练度。
+###背景介绍Compojure是Ring的中间件,实现了request的路由功能。
+###建立项目开发Clojure项目标配的Lein，使用Lein命令 lein new compojure-example,建立项目。
+###添加依赖初步建立项目之后，项目中只有Cloj">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Compojure hello world">
+<meta property="og:url" content="http://yoursite.com/post/compojure-hello-world/index.html">
+<meta property="og:site_name" content="青蜂侠">
+<meta property="og:description" content="断断续续学习了很久的Clojure，对语法也半生不熟的了，不过基本可以使用了，写点web的项目锻炼一下Clojure的熟练度。
+###背景介绍Compojure是Ring的中间件,实现了request的路由功能。
+###建立项目开发Clojure项目标配的Lein，使用Lein命令 lein new compojure-example,建立项目。
+###添加依赖初步建立项目之后，项目中只有Cloj">
+<meta property="og:updated_time" content="2015-08-02T12:59:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Compojure hello world">
+<meta name="twitter:description" content="断断续续学习了很久的Clojure，对语法也半生不熟的了，不过基本可以使用了，写点web的项目锻炼一下Clojure的熟练度。
+###背景介绍Compojure是Ring的中间件,实现了request的路由功能。
+###建立项目开发Clojure项目标配的Lein，使用Lein命令 lein new compojure-example,建立项目。
+###添加依赖初步建立项目之后，项目中只有Cloj">
+  
+    <link rel="alternate" href="/atom.xml" title="青蜂侠" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">青蜂侠</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-clojure/compojure hello world" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/post/compojure-hello-world/" class="article-date">
+  <time datetime="2015-08-02T08:17:00.000Z" itemprop="datePublished">2015-08-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Compojure hello world
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>断断续续学习了很久的Clojure，对语法也半生不熟的了，不过基本可以使用了，写点web的项目锻炼一下Clojure的熟练度。</p>
+<p>###背景介绍<br><a href="https://github.com/weavejester/compojure" target="_blank" rel="external">Compojure</a>是<a href="https://github.com/ring-clojure/ring" target="_blank" rel="external">Ring</a>的中间件,实现了request的路由功能。</p>
+<p>###建立项目<br>开发Clojure项目标配的Lein，使用Lein命令 lein new compojure-example,建立项目。</p>
+<p>###添加依赖<br>初步建立项目之后，项目中只有Clojure-core的依赖，想要使用Compojure还需要添加相关的依赖。在project.clj中新增依赖：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[org.clojure/clojure <span class="string">"1.6.0"</span>]</span><br><span class="line">[compojure <span class="string">"1.1.6"</span>]</span><br><span class="line">[ring/ring-core <span class="string">"1.2.1"</span>]</span><br><span class="line">[ring/ring-jetty-adapter <span class="string">"1.2.1"</span>]</span><br></pre></td></tr></table></figure></p>
+<p>增加完依赖，需要增加ring的一些插件，便于使用一些命令<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:plugins</span> [[lein-ring <span class="string">"0.8.10"</span>]]</span><br></pre></td></tr></table></figure></p>
+<p>完成了上述配置之后，project.clj文件如下：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">defproject</span> compojure-example <span class="string">"0.1.0"</span></span><br><span class="line">  <span class="symbol">:description</span> <span class="string">"Example Compojure project"</span></span><br><span class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">"1.6.0"</span>]</span><br><span class="line">                 [compojure <span class="string">"1.1.6"</span>]</span><br><span class="line">                 [ring/ring-core <span class="string">"1.2.1"</span>]</span><br><span class="line">                 [ring/ring-jetty-adapter <span class="string">"1.2.1"</span>]</span><br><span class="line">                 [hiccup <span class="string">"1.0.0"</span>]]</span><br><span class="line">  <span class="symbol">:plugins</span> [[lein-ring <span class="string">"0.8.10"</span>]]</span><br><span class="line">  <span class="symbol">:ring</span> &#123;<span class="symbol">:handler</span> compojure.example.routes/app&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>###routes<br>先写一个简单的hello world。</p>
+<p>####增加引用<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> compojure.example.routes</span><br><span class="line">   (<span class="symbol">:gen-class</span>)</span><br><span class="line">  (<span class="symbol">:use</span> compojure.core</span><br><span class="line">        ring.adapter.jetty</span><br><span class="line">        compojure.example.views</span><br><span class="line">        [hiccup.middleware <span class="symbol">:only</span> (<span class="name">wrap-base-url</span>)]</span><br><span class="line">        ring.adapter.jetty)</span><br><span class="line">  (<span class="symbol">:require</span> [compojure.route <span class="symbol">:as</span> route]</span><br><span class="line">            [compojure.handler <span class="symbol">:as</span> handler]</span><br><span class="line">            [compojure.response <span class="symbol">:as</span> response]))</span><br></pre></td></tr></table></figure></p>
+<p>ring.adapter.jetty为了将应用跑在jetty上，当然如果不需要运行在jetty上也可以不增加。<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">defroutes</span> app-routes</span><br><span class="line">           (<span class="name">GET</span> <span class="string">"/"</span> [] (<span class="string">"hello world"</span>)</span><br><span class="line">           (<span class="name">route/resources</span> <span class="string">"/"</span>)</span><br><span class="line">           (<span class="name">route/not-found</span> <span class="string">"Page not found"</span>)))</span><br><span class="line">(<span class="name">run-jetty</span> main-routes &#123;<span class="symbol">:port</span> <span class="number">5050</span>&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>####静态资源<br>通过<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">route/resources</span> <span class="string">"/"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>的方式可以访问项目中的静态文件（如js，css，html，img）等。</p>
+<p>###run</p>
+<p>####默认ring启动<br>现在使用命令<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lein ring server</span><br></pre></td></tr></table></figure></p>
+<p>就可以运行项目，web项目将默认以3000启动。</p>
+<p>####jetty 启动<br>使用如下命令：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lein deps</span><br><span class="line">lein compile</span><br><span class="line">lein uberjar</span><br></pre></td></tr></table></figure></p>
+<p>如上之后，在项目的target目录下会有XX-standalone.jar，使用命令<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar XX-standalone.jar</span><br></pre></td></tr></table></figure></p>
+<p>就可以在jetty中启动项目。</p>
+<p>###Reference</p>
+<blockquote>
+<p><a href="https://github.com/weavejester/compojure/wiki" target="_blank" rel="external">Compojure wiki</a><br><a href="http://weavejester.github.io/compojure/" target="_blank" rel="external">Compojure API</a><br><a href="https://github.com/ring-clojure/ring/blob/master/SPEC" target="_blank" rel="external">Ring Spec</a><br><a href="http://clojure-doc.org/articles/tutorials/basic_web_development.html" target="_blank" rel="external">Clojure-doc Basic web Development</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/post/compojure-hello-world/" data-id="cipak3m2x000kya5nwfkzlfzx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure-Compojure/">clojure Compojure</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/post/undertow-core/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          undertow core
+        
+      </div>
+    </a>
+  
+  
+    <a href="/post/undefined/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">乐观锁(Optimistic Locking)与悲观锁(Pessimistic Locking)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/SQL/">SQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/clojure/">clojure</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/programing/">programing</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/summarize/">summarize</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术总结/">技术总结</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure/">Clojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Clojure-ruleengine/">Clojure ruleengine</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idempotent/">Idempotent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-JVM/">Java JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-Index-SQL/">MySQL Index SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-MySQL/">SQL MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Java/">Spring Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Undertow/">Undertow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/clojure-Compojure/">clojure Compojure</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/front-end-cross-domian/">front-end, cross-domian</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/memcached/">memcached</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice/">microservice</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/microservice-design-patterns/">microservice design-patterns</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rime-输入法/">rime,输入法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc-pigeon/">rpc pigeon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrum-敏捷-大项目管理/">scrum 敏捷 大项目管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/">动态代码 Groovy OGNL SpEL MVEL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动静分离/">动静分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实时通信-comet-websocket/">实时通信 comet websocket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/技术总结/">技术总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新年计划/">新年计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/管理/">管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统重构-设计模式/">系统重构 设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Clojure/" style="font-size: 20px;">Clojure</a> <a href="/tags/Clojure-ruleengine/" style="font-size: 10px;">Clojure ruleengine</a> <a href="/tags/Idempotent/" style="font-size: 10px;">Idempotent</a> <a href="/tags/Java-JVM/" style="font-size: 10px;">Java JVM</a> <a href="/tags/MySQL-Index-SQL/" style="font-size: 10px;">MySQL Index SQL</a> <a href="/tags/SQL-MySQL/" style="font-size: 10px;">SQL MySQL</a> <a href="/tags/Spring-Java/" style="font-size: 16.67px;">Spring Java</a> <a href="/tags/Undertow/" style="font-size: 13.33px;">Undertow</a> <a href="/tags/clojure-Compojure/" style="font-size: 10px;">clojure Compojure</a> <a href="/tags/front-end-cross-domian/" style="font-size: 10px;">front-end, cross-domian</a> <a href="/tags/memcached/" style="font-size: 10px;">memcached</a> <a href="/tags/microservice/" style="font-size: 10px;">microservice</a> <a href="/tags/microservice-design-patterns/" style="font-size: 10px;">microservice design-patterns</a> <a href="/tags/rime-输入法/" style="font-size: 10px;">rime,输入法</a> <a href="/tags/rpc-pigeon/" style="font-size: 10px;">rpc pigeon</a> <a href="/tags/scrum-敏捷-大项目管理/" style="font-size: 10px;">scrum 敏捷 大项目管理</a> <a href="/tags/动态代码-Groovy-OGNL-SpEL-MVEL/" style="font-size: 10px;">动态代码 Groovy OGNL SpEL MVEL</a> <a href="/tags/动静分离/" style="font-size: 10px;">动静分离</a> <a href="/tags/实时通信-comet-websocket/" style="font-size: 10px;">实时通信 comet websocket</a> <a href="/tags/技术总结/" style="font-size: 16.67px;">技术总结</a> <a href="/tags/新年计划/" style="font-size: 13.33px;">新年计划</a> <a href="/tags/管理/" style="font-size: 13.33px;">管理</a> <a href="/tags/系统重构-设计模式/" style="font-size: 10px;">系统重构 设计模式</a> <a href="/tags/转载/" style="font-size: 10px;">转载</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">二月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/post/bigproj-in-scrum/">Scrum中大项目管理</a>
+          </li>
+        
+          <li>
+            <a href="/post/dynamic-code-in-java/">Java中使用动态代码</a>
+          </li>
+        
+          <li>
+            <a href="/post/system-reconstruct-summary/">业务系统重构总结</a>
+          </li>
+        
+          <li>
+            <a href="/post/service-design-patterns-practices/">服务化设计模式实践</a>
+          </li>
+        
+          <li>
+            <a href="/post/brower-server-msg/">浏览器与服务器的消息通信</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 陈景广<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
